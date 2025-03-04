@@ -776,20 +776,21 @@ colnames(complete_frame4) <- c("sequence","sort_geomean_log10","sort_geomean","s
 
 ```{r Noderer score vs individual MFI graph}
 Noderer_vs_individual_scatterplot <- ggplot() + 
-  labs(x = "MFI individual", y = "Noderer score") +
+  labs(x = "MFI individual", y = "Noderer score") + theme(panel.grid = element_blank()) + 
   scale_x_log10(limits = c(0.0065,1.6)) + scale_y_continuous(limits = c(20,125)) +
   geom_point(data = complete_frame4 %>% filter(!is.na(mfi_individual)), aes(x = mfi_individual, y = noderer)) +
-  geom_point(data = complete_frame4 %>% filter(sequence %in% c("TTCATCATG","GCGCGCATG")), aes(x = mfi_individual, y = noderer), color = "red") +
-  geom_text_repel(data = complete_frame4 %>% filter(sequence %in% c("TTCATCATG","GCGCGCATG")), aes(x = mfi_individual, y = noderer, label = sequence), color = "orange") +
+  geom_point(data = complete_frame4 %>% filter(sequence %in% c("TTCATCATG","GCGCGCATG")), aes(x = mfi_individual, y = noderer), fill = "red", color = "black", shape = 21) +
+  geom_text_repel(data = complete_frame4 %>% filter(sequence %in% c("TTCATCATG","GCGCGCATG")), aes(x = mfi_individual, y = noderer, label = sequence), color = "red", size = 3) +
   NULL; Noderer_vs_individual_scatterplot
 ggsave(file = "plots/Noderer_vs_individual_scatterplot.png", Noderer_vs_individual_scatterplot, height = 4, width = 5)
+ggsave(file = "plots/Noderer_vs_individual_scatterplot.pdf", Noderer_vs_individual_scatterplot, height = 1.6, width = 3.32)
 
 Noderer_vs_calibrated_score_scatterplot <- ggplot() + theme(panel.grid = element_blank()) + 
   labs(x = "MFI calibrated sort-seq score", y = "Noderer score") +
   scale_x_log10(limits = c(0.0065,1.6)) + scale_y_continuous(limits = c(20,125)) +
   geom_point(data = complete_frame4, aes(x = calibrated_score, y = noderer), alpha = 0.03) +
-  #geom_point(data = complete_frame4 %>% filter(sequence %in% c("TTCATCATG","GCGCGCATG")), aes(x = calibrated_score, y = noderer), color = "red") +
-  #geom_text_repel(data = complete_frame4 %>% filter(sequence %in% c("TTCATCATG","GCGCGCATG")), aes(x = calibrated_score, y = noderer, label = sequence), color = "orange") +
+  geom_point(data = complete_frame4 %>% filter(sequence %in% c("TTCATCATG","GCGCGCATG")), aes(x = calibrated_score, y = noderer), fill = "red", color = "black", shape = 21) +
+  geom_text_repel(data = complete_frame4 %>% filter(sequence %in% c("TTCATCATG","GCGCGCATG")), aes(x = calibrated_score, y = noderer, label = sequence), color = "red", size = 3) +
   NULL; Noderer_vs_calibrated_score_scatterplot
 ggsave(file = "plots/Noderer_vs_calibrated_score_scatterplot.png", Noderer_vs_calibrated_score_scatterplot, height = 4, width = 4)
 ggsave(file = "plots/Noderer_vs_calibrated_score_scatterplot.pdf", Noderer_vs_calibrated_score_scatterplot, height = 1.6, width = 3.32)
@@ -800,7 +801,7 @@ round(cor(log10(complete_frame4$calibrated_score), complete_frame4$noderer, meth
 
 ```
 
-## Seeing if we can model what is going on 
+## Seeing if we can model what is going on
 ```{r PSSM for calibrated_score}
 ## Trying a position weight matrix for the calibrated score
 
@@ -845,12 +846,12 @@ PWM_barplot
 ggsave(file = "plots/PWM_barplot.pdf", PWM_barplot, height = 1.2, width = 3)
 
 PWM_pointplot <- ggplot() + 
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top") + 
   labs(x = "Position along Kozak", y = "Weighted\nfrequency") + 
   geom_hline(yintercept = 0.25, linetype = 2, alpha = 0.4) + 
-  geom_point(data = pwm_matrix_melt, aes(x = Var2, y = value, color = Var1, fill = Var1), stat = "identity", shape = 21, size = 2, alpha = 0.5)
-PWM_pointplot
-ggsave(file = "plots/PWM_pointplot.pdf", PWM_pointplot, height = 1.4, width = 3)
+  geom_point(data = pwm_matrix_melt, aes(x = Var2, y = value, color = Var1, fill = Var1), stat = "identity", shape = 21, size = 2, alpha = 0.5) +
+  NULL; PWM_pointplot
+ggsave(file = "plots/PWM_pointplot.pdf", PWM_pointplot, height = 2, width = 3.4)
 
 ```
 
@@ -1193,20 +1194,20 @@ RF_refined_noderer_scatterplot <- ggplot() + theme(panel.grid.minor = element_bl
   geom_point(data = outlier_set_atgh, aes(x = rf_predict_mfi, y = noderer), alpha = 0.1, color = "blue") +
   #geom_point(data = outlier_set_gatg, aes(x = rf_predict_mfi, y = noderer), alpha = 0.1, color = "magenta") +
   #geom_point(data = outlier_set_gatg, aes(x = rf_predict_mfi, y = noderer), alpha = 0.5, color = "red") +
-  NULL
-RF_refined_noderer_scatterplot
+  geom_text_repel(data = complete_frame4 %>% filter(sequence %in% c("TTCATCATG","GCGCGCATG")), aes(x = rf_predict_mfi, y = noderer, label = sequence), color = "red") +
+  geom_point(data = complete_frame4 %>% filter(sequence %in% c("TTCATCATG","GCGCGCATG")), aes(x = rf_predict_mfi, y = noderer), color = "black", fill = "red", shape = 21) +
+  NULL; RF_refined_noderer_scatterplot
 ggsave(file = "plots/RF_refined_noderer_scatterplot.png", RF_refined_noderer_scatterplot, height = 4, width = 5)
 ggsave(file = "plots/RF_refined_noderer_scatterplot.pdf", RF_refined_noderer_scatterplot, height = 2, width = 3.32)
 
 RF_refined_calibrated_scatterplot <- ggplot() + theme(panel.grid.minor = element_blank()) + 
-  labs(x = "Calibrated score", y = "Noderer score") +
+  labs(x = "RF-imputed score", y = "Calibrated score") +
   scale_x_log10(limits = c(0.01,1.1), expand = c(0,0)) + scale_y_log10(limits = c(0.008,9)) + 
   #scale_y_continuous(limits = c(20,125)) +
   geom_point(data = complete_frame4, aes(x = rf_predict_mfi, y = calibrated_score), alpha = 0.05) +
   geom_point(data = outlier_set_atgg, aes(x = rf_predict_mfi, y = calibrated_score), alpha = 0.1, color = "red") +
   geom_point(data = outlier_set_atgh, aes(x = rf_predict_mfi, y = calibrated_score), alpha = 0.1, color = "blue") +
-  NULL
-RF_refined_calibrated_scatterplot
+  NULL; RF_refined_calibrated_scatterplot
 
 paste("Correlation coefficients between Calibrated scores and the Noderer scores -->","Pearson's r^2:",
 round(cor(complete_frame4$calibrated_score, complete_frame4$noderer, method = "pearson", use = "complete")^2,2),"Spearman's rho^2:",
@@ -1220,6 +1221,85 @@ paste("Correlation coefficients between RF-refined scores and the Noderer scores
 round(cor(log10(complete_frame4$rf_predict_mfi), complete_frame4$noderer, method = "pearson", use = "complete")^2,2),"Spearman's rho^2:",
 round(cor(log10(complete_frame4$rf_predict_mfi), complete_frame4$noderer, method = "spearman", use = "complete")^2,2))
 ```
+
+```{r Looking for outliers between the Noderer | RF-imputed and the calibrated scores}
+
+query_subset <- subset(complete_frame4) %>% filter(calibrated_score / rf_predict_mfi < 0.1 & calibrated_score / noderer^5 < 0.00000000001)
+
+qlogo_dataframe <- data.frame("n6" = rep(0,4),"n5" = rep(0,4),"n4" = rep(0,4),"n3" = rep(0,4),"n2" = rep(0,4),"n1" = rep(0,4))
+rownames(qlogo_dataframe) <- c("A","C","G","T")
+
+for(x in 1:nrow(query_subset)){
+  temp_seq <- substr(query_subset$sequence[x],1,6)
+  qlogo_dataframe[rownames(qlogo_dataframe) == substr(temp_seq,1,1),"n6"] <- qlogo_dataframe[rownames(qlogo_dataframe) == substr(temp_seq,1,1),"n6"] + 1
+  qlogo_dataframe[rownames(qlogo_dataframe) == substr(temp_seq,2,2),"n5"] <- qlogo_dataframe[rownames(qlogo_dataframe) == substr(temp_seq,2,2),"n5"] + 1
+  qlogo_dataframe[rownames(qlogo_dataframe) == substr(temp_seq,3,3),"n4"] <- qlogo_dataframe[rownames(qlogo_dataframe) == substr(temp_seq,3,3),"n4"] + 1
+  qlogo_dataframe[rownames(qlogo_dataframe) == substr(temp_seq,4,4),"n3"] <- qlogo_dataframe[rownames(qlogo_dataframe) == substr(temp_seq,4,4),"n3"] + 1
+  qlogo_dataframe[rownames(qlogo_dataframe) == substr(temp_seq,5,5),"n2"] <- qlogo_dataframe[rownames(qlogo_dataframe) == substr(temp_seq,5,5),"n2"] + 1
+  qlogo_dataframe[rownames(qlogo_dataframe) == substr(temp_seq,6,6),"n1"] <- qlogo_dataframe[rownames(qlogo_dataframe) == substr(temp_seq,6,6),"n1"] + 1
+}
+qlogo_dataframe2 <- qlogo_dataframe / colSums(qlogo_dataframe)
+qlogo_matrix <- as.matrix(qlogo_dataframe2)
+
+## Function for working out the position weight matrix value
+qlogo <- function(freq, total, bg=0.25){
+  #using the formulae above
+  p <- (freq + (sqrt(total) * 1/4)) / (total + (4 * (sqrt(total) * 1/4)))
+  log2(p/bg)
+}
+qlogo_matrix2 <- qlogo(qlogo_matrix,6)
+
+## Logo plot 
+proportion <- function(x){
+   rs <- sum(x);
+   return(x / rs);
+}
+
+## Bar chart
+qlogo_matrix_melt <- melt(qlogo_matrix)
+
+qlogo_barplot <- ggplot() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
+  labs(x = "Position along Kozak", y = "Weighted\nfrequency") + 
+  geom_bar(data = qlogo_matrix_melt, aes(x = Var2, y = value, fill = Var1), stat = "identity", color = "black") +
+  NULL; qlogo_barplot
+ggsave(file = "plots/qlogo_barplot.pdf", qlogo_barplot, height = 1.2, width = 3)
+
+qlogo_pointplot <- ggplot() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top") + 
+  labs(x = "Position along Kozak", y = "Weighted\nfrequency") + 
+  geom_hline(yintercept = 0.25, linetype = 2, alpha = 0.4) + 
+  geom_point(data = qlogo_matrix_melt, aes(x = Var2, y = value, color = Var1, fill = Var1), stat = "identity", shape = 21, size = 2, alpha = 0.5) +
+  NULL; qlogo_pointplot
+ggsave(file = "plots/qlogo_pointplot.pdf", qlogo_pointplot, height = 2, width = 3.4)
+
+```
+```{r Trying to quantitate repeated nucleotides}
+complete_frame4_repeats <- complete_frame4
+
+for(x in 1:nrow(complete_frame4_repeats)){
+  pair1 <- substr(complete_frame4_repeats$sequence[x],1,1) == substr(complete_frame4_repeats$sequence[x],2,2)
+  pair2 <- substr(complete_frame4_repeats$sequence[x],2,2) == substr(complete_frame4_repeats$sequence[x],3,3)
+  pair3 <- substr(complete_frame4_repeats$sequence[x],3,3) == substr(complete_frame4_repeats$sequence[x],4,4)
+  pair4 <- substr(complete_frame4_repeats$sequence[x],4,4) == substr(complete_frame4_repeats$sequence[x],5,5)
+  pair5 <- substr(complete_frame4_repeats$sequence[x],5,5) == substr(complete_frame4_repeats$sequence[x],6,6)
+  complete_frame4_repeats$nt_repeats[x] <- sum(pair1, pair2, pair3, pair4, pair5)
+  dint1 <- substr(complete_frame4_repeats$sequence[x],1,2) == substr(complete_frame4_repeats$sequence[x],3,4)
+  dint2 <- substr(complete_frame4_repeats$sequence[x],2,3) == substr(complete_frame4_repeats$sequence[x],4,5)
+  dint3 <- substr(complete_frame4_repeats$sequence[x],3,4) == substr(complete_frame4_repeats$sequence[x],5,6)
+  complete_frame4_repeats$dint_repeats[x] <- sum(dint1, dint2, dint3)
+}
+  
+RF_refined_calibrated_scatterplot <- ggplot() + theme(panel.grid.minor = element_blank()) + 
+  labs(x = "Calibrated score", y = "RF-imputed score") +
+  #scale_x_log10(limits = c(0.01,1.1), expand = c(0,0)) +
+  geom_histogram(data = complete_frame4_repeats, aes(x = noderer), bins = 20) +
+  facet_grid(rows = vars(dint_repeats), cols = vars(nt_repeats), scales = "free_y") +
+  NULL; RF_refined_calibrated_scatterplot
+
+```
+
+
 
 ## OK, this is where we are leaving all of the Kozak scoring. Now onto some applications.
 
@@ -1369,12 +1449,27 @@ Clinvar_Kozak_permutation_fold_densityplot <- ggplot() + theme(panel.grid.minor 
   scale_x_log10(breaks = c(0.01,0.1,1,10,100)) + 
   labs(x = "Fold change from reference Kozak", y = "Density") + 
   geom_hline(yintercept = 0) +
-  geom_histogram(data = running_snv_df, aes(x = fold_diff, y = ..density..), fill = "black", alpha = 0.3) +
-  geom_histogram(data = transcripts_john_uniq_snv, aes(x = fold_diff, y = ..density..), fill = "blue", alpha = 0.3) +
-  geom_histogram(data = transcripts_acmg, aes(x = fold_diff, y = ..density..), fill = "red", alpha = 0.3)
-Clinvar_Kozak_permutation_fold_densityplot
+  geom_density(data = running_snv_df, aes(x = fold_diff, y = ..density..), fill = "black", alpha = 0.3, adjust = 0.1) +
+  geom_density(data = transcripts_john_uniq_snv, aes(x = fold_diff, y = ..density..), fill = "red", alpha = 0.3, adjust = 0.5) +
+  #geom_histogram(data = transcripts_acmg, aes(x = fold_diff, y = ..density..), fill = "red", alpha = 0.3) +
+  NULL; Clinvar_Kozak_permutation_fold_densityplot
 ggsave(file = "Plots/Clinvar_Kozak_permutation_fold_densityplot.pdf", Clinvar_Kozak_permutation_fold_densityplot, height = 1, width = 3)
 
+Clinvar_Kozak_permutation_fold_densityplot <- ggplot() + theme(panel.grid = element_blank()) + 
+  scale_x_log10(breaks = c(0.01,0.1,1,10,100), expand = c(0,0)) + 
+  labs(x = "Fold change from reference Kozak", y = "Count") + 
+  #geom_hline(yintercept = 0) +
+  #geom_density(data = running_snv_df, aes(x = fold_diff, y = ..density..), fill = "black", alpha = 0.3, adjust = 0.5) +
+  geom_histogram(data = transcripts_john_uniq_snv, aes(x = fold_diff, y = ..count..), fill = "white", alpha = 0, adjust = 0.8, color = "grey50") +
+  geom_histogram(data = transcripts_john_uniq_snv %>% filter(fold_diff <= 0.25), aes(x = fold_diff, y = ..count..), fill = "red", alpha = 1, adjust = 0.8, color = "black") +
+  #geom_histogram(data = transcripts_acmg, aes(x = fold_diff, y = ..density..), fill = "red", alpha = 0.5, color = "red") +
+  NULL; Clinvar_Kozak_permutation_fold_densityplot
+ggsave(file = "Plots/Clinvar_Kozak_permutation_fold_densityplot.pdf", Clinvar_Kozak_permutation_fold_densityplot, height = 1.4, width = 3)
+```
+```
+
+
+```{r}
 transcripts_john_uniq_clinvar_max_diffs <- transcripts_john_uniq_clinvar %>% group_by(Gene) %>% summarize(max_fold_diff = max(fold_diff))
 
 sorted_permutations <- sort(running_snv_df$fold_diff)
@@ -1765,36 +1860,33 @@ complete_frame6$scaled_vsv <- (complete_frame6$vsv - as.numeric(complete_frame6[
 (as.numeric(complete_frame6[complete_frame6$sequence == "GCCACCATG", "vsv"]) - as.numeric(complete_frame6[complete_frame6$sequence == "XXXXXXXXX", "vsv"]))
 
 Scaled_individual_multiplex_s2_plot <- ggplot() + theme(panel.grid = element_blank()) + 
-  scale_x_log10(limits = c(0.01,2), expand = c(0,0)) + scale_y_continuous(limits = c(0,1)) +#scale_y_log10(limits = c(0.008,10)) + 
+  scale_x_log10(limits = c(0.01,1.1), expand = c(0,0)) + scale_y_log10(limits = c(0.003,1.1)) +  #scale_y_continuous(limits = c(0,1)) +#scale_y_log10(limits = c(0.008,10)) + 
   labs(x = "Abundance", y = "Enrichment in infected cells", title = "SARS-CoV-2 spike") +
   stat_smooth(data = complete_frame6 %>% filter(!is.na(scaled_ind_s2) & !is.na(scaled_s2)), aes(x = mfi_individual, y = scaled_ind_s2), geom='line', se=FALSE, alpha = 1, shape = 20, size = 2, color = "cyan", alpha = 0.2) +
   stat_smooth(data = complete_frame6 %>% filter(!is.na(scaled_ind_s2) & !is.na(scaled_s2)), aes(x = calibrated_score, y = scaled_s2), geom='line', se=FALSE, alpha = 1, shape = 20, size = 2, color = "red", line.alpha = 0.2) +
   geom_point(data = complete_frame6 %>% filter(!is.na(scaled_ind_s2) & !is.na(scaled_s2)), aes(x = mfi_individual, y = scaled_ind_s2), alpha = 1, shape = 20, size = 2, color = "blue") +
   geom_point(data = complete_frame6 %>% filter(!is.na(scaled_ind_s2) & !is.na(scaled_s2)), aes(x = calibrated_score, y = scaled_s2), alpha = 1, shape = 20, size = 2, color = "darkred") +
-  NULL
-Scaled_individual_multiplex_s2_plot
+  NULL; Scaled_individual_multiplex_s2_plot
 ggsave(file = "plots/Scaled_individual_multiplex_s2_plot.pdf", Scaled_individual_multiplex_s2_plot, height = 1.5, width = 1.5)
 
 Scaled_individual_multiplex_s1_plot <- ggplot() + theme(panel.grid = element_blank()) + 
-  scale_x_log10(limits = c(0.01,2), expand = c(0,0)) + scale_y_continuous(limits = c(0,1)) + #scale_y_log10(limits = c(0.008,10)) + 
+  scale_x_log10(limits = c(0.01,1.1), expand = c(0,0)) + scale_y_log10(limits = c(0.003,1.1)) + #scale_y_continuous(limits = c(0,1)) + #scale_y_log10(limits = c(0.008,10)) + 
   labs(x = "Abundance", y = "Enrichment in infected cells", title = "SARS-CoV spike") +
   stat_smooth(data = complete_frame6 %>% filter(!is.na(scaled_ind_s1) & !is.na(scaled_s1)), aes(x = mfi_individual, y = scaled_ind_s1), geom='line', se=FALSE, alpha = 1, shape = 20, size = 2, color = "cyan", alpha = 0.2) +
   stat_smooth(data = complete_frame6 %>% filter(!is.na(scaled_ind_s1) & !is.na(scaled_s1)), aes(x = calibrated_score, y = scaled_s1), geom='line', se=FALSE, alpha = 1, shape = 20, size = 2, color = "red", line.alpha = 0.2) +
   geom_point(data = complete_frame6 %>% filter(!is.na(scaled_ind_s1) & !is.na(scaled_s1)), aes(x = mfi_individual, y = scaled_ind_s1), alpha = 1, shape = 20, size = 2, color = "blue") +
   geom_point(data = complete_frame6 %>% filter(!is.na(scaled_ind_s1) & !is.na(scaled_s1)), aes(x = calibrated_score, y = scaled_s1), alpha = 1, shape = 20, size = 2, color = "darkred") +
-  NULL
-Scaled_individual_multiplex_s1_plot
+  NULL; Scaled_individual_multiplex_s1_plot
 ggsave(file = "plots/Scaled_individual_multiplex_s1_plot.pdf", Scaled_individual_multiplex_s1_plot, height = 1.5, width = 1.5)
 
 Scaled_individual_multiplex_vsv_plot <- ggplot() + theme(panel.grid = element_blank()) + 
-  scale_x_log10(limits = c(0.01,2), expand = c(0,0)) + #scale_y_log10(limits = c(0.008,10)) + 
+  scale_x_log10(limits = c(0.01,2), expand = c(0,0)) + scale_y_log10(limits = c(0.003,5)) + ##scale_y_log10(limits = c(0.008,10)) + 
   labs(x = "Abundance", y = "Enrichment in infected cells", title = "VSV-G") +
   stat_smooth(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = mfi_individual, y = scaled_ind_vsv), geom='line', se=FALSE, alpha = 1, shape = 20, size = 2, color = "cyan", alpha = 0.2) +
   #stat_smooth(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = calibrated_score, y = scaled_vsv), geom='line', se=FALSE, alpha = 1, shape = 20, size = 2, color = "red", line.alpha = 0.2) +
   geom_point(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = mfi_individual, y = scaled_ind_vsv), alpha = 1, shape = 20, size = 2, color = "blue") +
   #geom_point(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = calibrated_score, y = scaled_vsv), alpha = 1, shape = 20, size = 2, color = "darkred") +
-  NULL
-Scaled_individual_multiplex_vsv_plot
+  NULL; Scaled_individual_multiplex_vsv_plot
 ggsave(file = "plots/Scaled_individual_multiplex_vsv_plot.pdf", Scaled_individual_multiplex_vsv_plot, height = 1.5, width = 1.5)
 
 ```
@@ -2341,123 +2433,6 @@ ggplot() + scale_x_log10() + scale_y_log10(limits = c(0.003,3)) + labs(x = "Cali
 
 ```
 
-
-```{r BtKY72 kozak and sequence rep1}
-#  Rep 1
- sa1_bt_low <- read.delim(file = myfiles[161], sep = "\t")
- sa1_bt_high <- read.delim(file = myfiles[162], sep = "\t")
- sa1_bt_count <- merge(sa1_bt_low, sa1_bt_high, by = "X", all.x = T)
- colnames(sa1_bt_count) <- c("kozak","low","high")
- 
- ggplot() + scale_x_log10() + scale_y_log10() + 
-   geom_point(data = sa1_bt_count, aes(x = low, y = high), alpha = 0.2)
- 
- sa1_bt <- makeExperimentFrame2(c(153,154,161,162)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
- sa1_bt <- merge(sa1_bt, complete_frame6[,c("sequence","calibrated_score")])
- sa1_bt$n1 <- substr(sa1_bt$sequence,1,1)
- sa1_bt <- merge(sa1_bt, kozak_and_variant_key, by = "n1", all.x = T)
- sa1_bt_template_henrichment <- (sa1_bt %>% filter(sequence == "XXXXXXXXX"))$h_enrichment
- sa1_bt <- sa1_bt %>% filter(variant %in% c("WT","I21N","D355N"))
- sa1_bt$variant <- factor(sa1_bt$variant, levels = c("WT","I21N","K31D","D355N"))
- 
- ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "Calibrated abundance level", y = "Rate of infection (enrichment upon hygro treatment)") +
-   geom_point(data = sa1_bt, aes(x = calibrated_score, y = h_enrichment, color = variant), alpha = 0.2) +
-   facet_grid(cols = vars(variant))
- 
-#  Rep 2
- sa2_bt_low <- read.delim(file = myfiles[177], sep = "\t")
- sa2_bt_high <- read.delim(file = myfiles[178], sep = "\t")
- sa2_bt_count <- merge(sa2_bt_low, sa2_bt_high, by = "X", all.x = T)
- colnames(sa2_bt_count) <- c("kozak","low","high")
- 
- ggplot() + scale_x_log10() + scale_y_log10() + 
-   geom_point(data = sa2_bt_count, aes(x = low, y = high), alpha = 0.2)
- 
- sa2_bt <- makeExperimentFrame2(c(169,170,177,178)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
- sa2_bt <- merge(sa2_bt, complete_frame6[,c("sequence","calibrated_score")])
- sa2_bt$n1 <- substr(sa2_bt$sequence,1,1)
- sa2_bt <- merge(sa2_bt, kozak_and_variant_key, by = "n1", all.x = T)
- sa2_bt_template_henrichment <- (sa2_bt %>% filter(sequence == "XXXXXXXXX"))$h_enrichment
- sa2_bt <- sa2_bt %>% filter(variant %in% c("WT","I21N","D355N"))
- sa2_bt$variant <- factor(sa2_bt$variant, levels = c("WT","I21N","K31D","D355N"))
- 
- ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "Calibrated abundance level", y = "Rate of infection (enrichment upon hygro treatment)") +
-   geom_point(data = sa2_bt, aes(x = calibrated_score, y = h_enrichment, color = variant), alpha = 0.2) +
-   facet_grid(cols = vars(variant))
- 
-#  Now average the values
- sa_bt <- merge(sa1_bt[,c("sequence","calibrated_score","variant","h_enrichment")], sa2_bt[,c("sequence","h_enrichment")], by = "sequence")
- sa_bt$h_enrichment.x2 <- sa_bt$h_enrichment.x / mean((sa_bt %>% filter(variant == "WT" & calibrated_score < 1.1 & calibrated_score > 0.9))$h_enrichment.x, na.rm = T)
- sa_bt$h_enrichment.y2 <- sa_bt$h_enrichment.y / mean((sa_bt %>% filter(variant == "WT" & calibrated_score < 1.1 & calibrated_score > 0.9))$h_enrichment.y, na.rm = T)
- sa_bt$ave_enrichment <- (sa_bt$h_enrichment.x2 + sa_bt$h_enrichment.y2)/2
- sa_bt_template_henrichment <- (sa1_bt_template_henrichment + sa2_bt_template_henrichment)/2
- 
- ggplot() + scale_x_log10() + scale_y_log10(limits = c(0.003,3)) + labs(x = "Calibrated abundance level", y = "Rate of infection (enrichment upon hygro treatment)") +
-   geom_hline(yintercept = sa_bt_template_henrichment, color = "purple", size = 2, alpha = 0.5) +
-   geom_point(data = sa_bt, aes(x = calibrated_score, y = ave_enrichment, color = variant), alpha = 0.2) +
-   facet_grid(cols = vars(variant))
- 
-#  Whole thing is very noisy....
-```
-
-```{r Khosta2 kozak and sequence rep1}
-## Rep 1
-sa1_k2_low <- read.delim(file = myfiles[163], sep = "\t")
-sa1_k2_high <- read.delim(file = myfiles[164], sep = "\t")
-sa1_k2 <- merge(sa1_k2_low, sa1_k2_high, by = "X", all.x = T)
-colnames(sa1_k2) <- c("kozak","low","high")
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa1_k2, aes(x = low, y = high), alpha = 0.2)
-## 164 is missing most of its data
-
-sa1_k2 <- makeExperimentFrame2(c(153,154,163,163)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
-sa1_k2 <- merge(sa1_k2, complete_frame6[,c("sequence","calibrated_score")])
-sa1_k2$n1 <- substr(sa1_k2$sequence,1,1)
-sa1_k2 <- merge(sa1_k2, kozak_and_variant_key, by = "n1", all.x = T)
-sa1_k2_template_henrichment <- (sa1_k2 %>% filter(sequence == "XXXXXXXXX"))$h_enrichment
-sa1_k2 <- sa1_k2 %>% filter(variant %in% c("WT","I21N","D355N"))
-sa1_k2$variant <- factor(sa1_k2$variant, levels = c("WT","I21N","K31D","D355N"))
-
-ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "Calibrated abundance level", y = "Rate of infection (enrichment upon hygro treatment)") +
-  geom_point(data = sa1_k2, aes(x = calibrated_score, y = h_enrichment, color = variant), alpha = 0.2) +
-  facet_grid(cols = vars(variant))
-
-## Rep 2
-sa2_k2_low <- read.delim(file = myfiles[179], sep = "\t")
-sa2_k2_high <- read.delim(file = myfiles[180], sep = "\t")
-sa2_k2 <- merge(sa2_k2_low, sa2_k2_high, by = "X", all.x = T)
-colnames(sa2_k2) <- c("kozak","low","high")
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa2_k2, aes(x = low, y = high), alpha = 0.2)
-## 164 is missing most of its data
-
-sa2_k2 <- makeExperimentFrame2(c(169,170,179,180)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
-sa2_k2 <- merge(sa2_k2, complete_frame6[,c("sequence","calibrated_score")])
-sa2_k2$n1 <- substr(sa2_k2$sequence,1,1)
-sa2_k2 <- merge(sa2_k2, kozak_and_variant_key, by = "n1", all.x = T)
-sa2_k2_template_henrichment <- (sa2_k2 %>% filter(sequence == "XXXXXXXXX"))$h_enrichment
-sa2_k2 <- sa2_k2 %>% filter(variant %in% c("WT","I21N","D355N"))
-sa2_k2$variant <- factor(sa2_k2$variant, levels = c("WT","I21N","K31D","D355N"))
-
-ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "Calibrated abundance level", y = "Rate of infection (enrichment upon hygro treatment)") +
-  geom_point(data = sa2_k2, aes(x = calibrated_score, y = h_enrichment, color = variant), alpha = 0.2) +
-  facet_grid(cols = vars(variant))
-
-## Now average the values
-sa_k2 <- merge(sa1_k2[,c("sequence","calibrated_score","variant","h_enrichment")], sa2_k2[,c("sequence","h_enrichment")], by = "sequence")
-sa_k2$h_enrichment.x2 <- sa_k2$h_enrichment.x / mean((sa_k2 %>% filter(variant == "WT" & calibrated_score < 1.1 & calibrated_score > 0.9))$h_enrichment.x, na.rm = T)
-sa_k2$h_enrichment.y2 <- sa_k2$h_enrichment.y / mean((sa_k2 %>% filter(variant == "WT" & calibrated_score < 1.1 & calibrated_score > 0.9))$h_enrichment.y, na.rm = T)
-sa_k2$ave_enrichment <- (sa_k2$h_enrichment.x2 + sa_k2$h_enrichment.y2)/2
-sa_k2 <- sa_k2 %>% filter(variant %in% c("WT","I21N","D355N"))
-sa_k2_template_henrichment <- (sa1_k2_template_henrichment + sa2_k2_template_henrichment)/2
-
-ggplot() + scale_x_log10() + scale_y_log10(limits = c(0.003,3)) + labs(x = "Calibrated abundance level", y = "Rate of infection (enrichment upon hygro treatment)") +
-  geom_hline(yintercept = sa_k2_template_henrichment, color = "purple", size = 2, alpha = 0.5) +
-  geom_point(data = sa_k2, aes(x = calibrated_score, y = ave_enrichment, color = variant), alpha = 0.2) +
-  facet_grid(cols = vars(variant))
-```
 
 ```{r Making a combined graph for the minilibrary data}
 template_seqabund_dataframe <- data.frame("virus" = c("VSV","SARS-CoV","SARS-CoV-2"),
