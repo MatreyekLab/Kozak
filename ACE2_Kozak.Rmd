@@ -1391,45 +1391,29 @@ running_snv_df <- read.csv(file = "Output_datatables/Human_kozak_permutations.cs
 # 
 # write.csv(file = "Output_datatables/Human_kozak_permutations.csv", running_snv_df, row.names = F)
 
-
 ```
 
-
-```{r Figure out biggest effect size differences possible through snv for each possible Kozak}
-transcripts_john <- read.csv(file = "Data/genome_proteome/Kozaks_Improved.csv") 
-
-transcripts_john_uniq <- transcripts_john %>% select(Gene,Kozak) %>% distinct() %>% mutate(kozak = paste0(Kozak,"ATG"))
-
-transcripts_john_uniq_snv <- merge(transcripts_john_uniq, running_snv_df, by = "kozak") %>% mutate(gene = Gene)
-
-Genome_Kozak_permutation_fold_densityplot <- ggplot() + theme(panel.grid.minor = element_blank()) + 
-  scale_x_log10(breaks = c(0.01,0.1,1,10,100)) + 
-  labs(x = "Fold change from reference Kozak", y = "Density") + 
-  geom_hline(yintercept = 0) +
-  geom_density(data = transcripts_john_uniq_snv, aes(x = fold_diff), color = "black")
-Genome_Kozak_permutation_fold_densityplot
-ggsave(file = "Plots/Genome_Kozak_permutation_fold_densityplot.pdf", Genome_Kozak_permutation_fold_densityplot, height = 1.5, width = 3)
-```
 
 ```{r}
-clinvar <- read.delim(file = "Data/ClinVar/ClinVar_5primeUTR.txt", header = F, stringsAsFactors = F, sep = "\t")
-colnames(clinvar) <- c("Symbol","GeneID","VariationID","AlleleID","Type","Assembly","NucleotideExpression","NucleotideChange","ProteinExpression","ProteinChange","UsedForNaming","Submitted","OnRefSeqGene")
+complete_frame4_likely_low <- complete_frame4 %>% filter(sort_upper_conf < 0.75)
 
-clinvar2 <- clinvar[,c("Symbol","NucleotideChange")]
-clinvar2$nchar <- lapply(clinvar2$NucleotideChange,nchar)
-clinvar2b <- clinvar2 %>% filter(nchar == 7 & Symbol != "-")
-clinvar2b$gsub_nchar <- nchar(gsub("[A-Z]","",clinvar2b$NucleotideChange))
-clinvar2b$gsub_pos <- gsub("[^0-9]","",clinvar2b$NucleotideChange)
-clinvar3 <- clinvar2b %>% filter(gsub_nchar == 5 & gsub_pos <= 6) %>% distinct()
-clinvar3 <- clinvar3[,c("Symbol","NucleotideChange")]
-colnames(clinvar3) <- c("gene","hgvs_conseq")
-paste("The number of Kozak variants found in ClinVar is:",nrow(clinvar3))
+clinvar <- read.csv(file = "Data/ClinVar/250305_clinvar_kozak_mutations.csv", header = T, stringsAsFactors = F) %>% filter(mutation_location == "kozak" & !(old_kozak %in% c("error:no_kozak_found", "error:mutation_not_match_kozak", "error:microsatellite")))
 
-transcripts_john_uniq_clinvar <- merge(transcripts_john_uniq_snv, clinvar3[,c("gene","hgvs_conseq")], by = c("gene","hgvs_conseq")) 
-transcripts_john_uniq_clinvar2 <- transcripts_john_uniq_clinvar %>% group_by(gene, hgvs_conseq) %>% summarize(n = n())
-transcripts_john_uniq_clinvar3 <- merge(transcripts_john_uniq_clinvar,transcripts_john_uniq_clinvar2, by = c("gene","hgvs_conseq")) %>% distinct() %>% arrange(fold_diff)
+paste("The number of Kozak -6 to -1 nt variants found in ClinVar is:",nrow(clinvar))
 
-transcripts_john_uniq_clinvar3_multikozak <- transcripts_john_uniq_clinvar3[,c("gene","kozak")] %>% group_by(gene, kozak) %>% distinct() %>% mutate(count = 1) %>% group_by(gene) %>% summarize(sum_count = sum(count)) %>% filter(sum_count > 1)
+colnames(clinvar)[colnames(clinvar) == "GeneSymbol"] <- "gene"
+colnames(clinvar)[colnames(clinvar) == "mutation"] <- "nt_change"
+clinvar$hgvs_conseq <- paste0("c.",clinvar$nt_change)
+clinvar$kozak <- paste0(clinvar$old_kozak,"ATG")
+clinvar$mut_kozak <- paste0(clinvar$new_kozak,"ATG")
+
+clinvar_confidently_low <- clinvar %>% filter(mut_kozak %in% complete_frame4_likely_low$sequence) %>% mutate(conf_low = "Yes")
+clinvar_confidently_low_mutkozak_list <- unique(clinvar_confidently_low$mut_kozak)
+
+paste("The number of Kozak -6 to -1 nt variants found in ClinVar that are confidently measured as potentially low is:",nrow(clinvar_confidently_low))
+
+clinvar2 <- merge(clinvar, running_snv_df, by = c("hgvs_conseq","kozak","mut_kozak"), all.x = T)
+clinvar4 <- merge(clinvar2, unique(clinvar_confidently_low[,c("mut_kozak", "conf_low")]), all.x = T)
 
 acmg73 <- read.csv(file = "Data/ClinVar/ACMG73.csv", header = T, stringsAsFactors = F)
 
@@ -1440,17 +1424,15 @@ gene_omim_extractor <- function(text){
 acmg73$gene <- lapply(acmg73$gene_omim,gene_omim_extractor)
 acmg73_list <- unique(acmg73$gene)
 
-transcripts_acmg <- transcripts_john_uniq_clinvar3 %>% filter(gene %in% acmg73_list)
-transcripts_acmg$gene_kozak <- paste0(transcripts_acmg$gene,"_",transcripts_acmg$kozak)
-
-transcripts_acmg_most_common <- data.frame(table(transcripts_acmg$gene)) %>% arrange(desc(Freq))
+clinvar2_acmg <- clinvar2 %>% filter(gene %in% acmg73_list)
+clinvar2_acmg$gene_kozak <- paste0(clinvar2_acmg$gene,"_",clinvar2_acmg$kozak)
 
 Clinvar_Kozak_permutation_fold_densityplot <- ggplot() + theme(panel.grid.minor = element_blank()) + 
   scale_x_log10(breaks = c(0.01,0.1,1,10,100)) + 
   labs(x = "Fold change from reference Kozak", y = "Density") + 
   geom_hline(yintercept = 0) +
   geom_density(data = running_snv_df, aes(x = fold_diff, y = ..density..), fill = "black", alpha = 0.3, adjust = 0.1) +
-  geom_density(data = transcripts_john_uniq_snv, aes(x = fold_diff, y = ..density..), fill = "red", alpha = 0.3, adjust = 0.5) +
+  geom_density(data = clinvar2, aes(x = fold_diff, y = ..density..), fill = "red", alpha = 0.3, adjust = 0.5) +
   #geom_histogram(data = transcripts_acmg, aes(x = fold_diff, y = ..density..), fill = "red", alpha = 0.3) +
   NULL; Clinvar_Kozak_permutation_fold_densityplot
 ggsave(file = "Plots/Clinvar_Kozak_permutation_fold_densityplot.pdf", Clinvar_Kozak_permutation_fold_densityplot, height = 1, width = 3)
@@ -1460,90 +1442,41 @@ Clinvar_Kozak_permutation_fold_densityplot <- ggplot() + theme(panel.grid = elem
   labs(x = "Fold change from reference Kozak", y = "Count") + 
   #geom_hline(yintercept = 0) +
   #geom_density(data = running_snv_df, aes(x = fold_diff, y = ..density..), fill = "black", alpha = 0.3, adjust = 0.5) +
-  geom_histogram(data = transcripts_john_uniq_snv, aes(x = fold_diff, y = ..count..), fill = "white", alpha = 0, adjust = 0.8, color = "grey50") +
-  geom_histogram(data = transcripts_john_uniq_snv %>% filter(fold_diff <= 0.25), aes(x = fold_diff, y = ..count..), fill = "red", alpha = 1, adjust = 0.8, color = "black") +
+  geom_histogram(data = clinvar2, aes(x = fold_diff, y = ..count..), fill = "white", alpha = 0, adjust = 0.8, color = "grey50") +
+  geom_histogram(data = clinvar4 %>% filter(fold_diff <= 0.25 & conf_low == "Yes"), aes(x = fold_diff, y = ..count..), fill = "red", alpha = 1, adjust = 0.8, color = "black") +
   #geom_histogram(data = transcripts_acmg, aes(x = fold_diff, y = ..density..), fill = "red", alpha = 0.5, color = "red") +
   NULL; Clinvar_Kozak_permutation_fold_densityplot
 ggsave(file = "Plots/Clinvar_Kozak_permutation_fold_densityplot.pdf", Clinvar_Kozak_permutation_fold_densityplot, height = 1.4, width = 3)
 ```
-```
 
 
 ```{r}
-transcripts_john_uniq_clinvar_max_diffs <- transcripts_john_uniq_clinvar %>% group_by(Gene) %>% summarize(max_fold_diff = max(fold_diff))
+clinvar2_acmg_most_common <- data.frame(table(clinvar2_acmg$gene)) %>% arrange(desc(Freq))
+clinvar2_acmg_most_common_3plus <- clinvar2_acmg_most_common %>% filter(Freq >= 3)
+clinvar2_acmg_most_common_3plus_levels <- clinvar2_acmg_most_common_3plus$Var1
 
-sorted_permutations <- sort(running_snv_df$fold_diff)
-sorted_permutations_ranks <- rank(sorted_permutations)
-sorted_permutations_cdf <- sorted_permutations_ranks / length(sorted_permutations)
-sorted_permutations_cdf_data <- data.frame(x = sorted_permutations, y = sorted_permutations_cdf)
+clinvar2_acmg_3plus <- clinvar2_acmg %>% filter(gene %in% clinvar2_acmg_most_common_3plus$Var1)
+clinvar2_acmg_3plus$gene <- factor(clinvar2_acmg_3plus$gene, levels = rev(clinvar2_acmg_most_common_3plus_levels))
 
-sorted_kozak_permutations <- sort(transcripts_john_uniq_snv$fold_diff)
-sorted_kozak_permutations_ranks <- rank(sorted_kozak_permutations)
-sorted_kozak_permutations_cdf <- sorted_kozak_permutations_ranks / length(sorted_kozak_permutations)
-sorted_kozak_permutations_cdf_data <- data.frame(x = sorted_kozak_permutations, y = sorted_kozak_permutations_cdf)
+clinvar2_acmg_3plus$label <- substr(clinvar2_acmg_3plus$hgvs_conseq, 3, 12)
 
-sorted_kozak_clinvar_permutations <- sort(transcripts_john_uniq_clinvar3$fold_diff)
-sorted_kozak_clinvar_permutations_ranks <- rank(sorted_kozak_clinvar_permutations)
-sorted_kozak_clinvar_permutations_cdf <- sorted_kozak_clinvar_permutations_ranks / length(sorted_kozak_clinvar_permutations)
-sorted_kozak_clinvar_permutations_cdf_data <- data.frame(x = sorted_kozak_clinvar_permutations, y = sorted_kozak_clinvar_permutations_cdf)
-
-sorted_permutations_cdf_data2 <- sorted_permutations_cdf_data %>%
-  group_by(row_group = ceiling(row_number() / 10)) %>%
-  summarize_all(.funs = ~mean(., na.rm = TRUE)) %>%
-  ungroup()
-
-sorted_kozak_permutations_cdf_data2 <- sorted_kozak_permutations_cdf_data %>%
-  group_by(row_group = ceiling(row_number() / 100)) %>%
-  summarize_all(.funs = ~mean(., na.rm = TRUE)) %>%
-  ungroup()
-
-Cumulative_probability_graph <- ggplot() + theme(panel.grid = element_blank()) +
-  scale_y_log10(expand = c(0,0)) + scale_x_continuous(expand = c(0,0)) +
-  geom_step(data = sorted_permutations_cdf_data2, aes(y, x), direction = "mid", size = 2, alpha = 0.9) +
-  #geom_step(data = sorted_kozak_permutations_cdf_data2, aes(y, x), direction = "mid", color = "cyan", size = 2, alpha = 0.6) +
-  geom_step(data = sorted_kozak_clinvar_permutations_cdf_data, aes(y, x), direction = "mid", color = "red", size = 2, alpha = 0.9) +
-  labs(y = "Fold difference", x = "Cumulative Probability") +
-  geom_hline(yintercept = 0.25, linetype = 1, alpha = 0.2) +
-  geom_vline(xintercept = 0.052, linetype = 1, alpha = 0.2)
-Cumulative_probability_graph
-ggsave(file = "Plots/Cumulative_probability_graph.pdf", Cumulative_probability_graph, height = 1.4, width = 3)
-
-paste("The fraction of ClinVar Kozak variants that are expected to reduce the steady-state abundance of the protein by 4-fold or more:",round(max(sorted_kozak_clinvar_permutations_cdf_data[sorted_kozak_clinvar_permutations_cdf_data$x < 0.25,"y"]),3))
-
-nrow(subset(transcripts_john_uniq_clinvar3, fold_diff <= 0.25))
-nrow(subset(transcripts_john_uniq_clinvar3, fold_diff <= 0.25)) / nrow(transcripts_john_uniq_clinvar3)
-```
-
-
-```{r}
-acmg_manual_kozaks <- read.csv(file = "Data/ClinVar/ACMG73_manual_kozaks.csv", header = T, stringsAsFactors = F)
-acmg_manual_kozaks$gene_kozak <- paste0(acmg_manual_kozaks$gene,"_",acmg_manual_kozaks$kozak)
-
-transcripts_acmg2 <- transcripts_acmg %>% filter(gene_kozak %in% acmg_manual_kozaks$gene_kozak)
-
-transcripts_acmg2_genetable <- data.frame(table(transcripts_acmg2$gene)) %>% arrange(desc(Freq))
-
-transcripts_acmg2_genetable_2plus <- transcripts_acmg2_genetable %>% filter(Freq >= 2)
-transcripts_acmg2_genetable_2plus_levels <- transcripts_acmg2_genetable_2plus$Var1
-
-transcripts_acmg2_2plus <- transcripts_acmg2 %>% filter(gene %in% transcripts_acmg2_genetable_2plus$Var1)
-transcripts_acmg2_2plus$gene <- factor(transcripts_acmg2_2plus$gene, levels = rev(transcripts_acmg2_genetable_2plus_levels))
-
-transcripts_acmg2_2plus$label <- substr(transcripts_acmg2_2plus$hgvs_conseq, 3, 12)
+clinvar2_acmg_3plus_conf_low <- clinvar2_acmg_3plus %>% filter(fold_diff < 0.2 & mut_kozak %in% clinvar_confidently_low_mutkozak_list)
 
 Most_clinvar_grouped_scatterplot <- ggplot() + 
   theme(panel.grid.minor = element_blank(), panel.grid.major.x = element_blank()) + 
   labs(x = "Fold abundance of reference Kozak", y = NULL) +
-  scale_x_log10() + scale_y_discrete(expand = c(0,1)) +
+  scale_x_log10(limits = c(0.02,18)) + scale_y_discrete(expand = c(0,1)) +
   geom_vline(xintercept = 1, linetype = 2, alpha = 0.4) +
-  geom_point(data = transcripts_acmg2_2plus, aes(x = fold_diff, y = gene), alpha = 0.25) +
-  geom_text(data = transcripts_acmg2_2plus %>% filter(fold_diff < 0.25), 
-            aes(x = fold_diff, y = gene, label = label), angle = 0, hjust = 0, vjust = -0.25, color = "red", size = 2) +
+  geom_point(data = clinvar2_acmg_3plus, aes(x = fold_diff, y = gene), alpha = 0.25) +
+  geom_label_repel(data = clinvar2_acmg_3plus %>% filter(fold_diff < 0.2 & mut_kozak %in% clinvar_confidently_low_mutkozak_list), 
+            aes(x = fold_diff, y = gene, label = label), color = "red", size = 2, segment.color = "orange", segment.alpha = 0.4, min.segment.length = 0, label.padding = 0.2) +
+  geom_point(data = clinvar2_acmg_3plus_conf_low, aes(x = fold_diff, y = gene), alpha = 0.25, color = "red") +
   NULL; Most_clinvar_grouped_scatterplot
-ggsave(file = "Plots/Most_clinvar_grouped_scatterplot.pdf", Most_clinvar_grouped_scatterplot, height = 4, width = 3.5)
+ggsave(file = "Plots/Most_clinvar_grouped_scatterplot.pdf", Most_clinvar_grouped_scatterplot, height = 5, width = 3.75)
 ```
 
 ```{r}
+
 paste("BRCA1 Reference calibrated_score score:",round(complete_frame4[complete_frame4$sequence == "AAAGAAATG","calibrated_score"],2))
 paste("BRCA1 VCV000869050 calibrated_score score:",round(complete_frame4[complete_frame4$sequence == "AATGAAATG","calibrated_score"],2))
 
@@ -1565,78 +1498,32 @@ paste("RAD51C VCV000824488 calibrated_score score:",round(complete_frame4[comple
 
 ```{r}
 ## Below are manually confirming potentially problematic VUSses
-transcripts_acmg$comment <- NA
-transcripts_acmg[transcripts_acmg$gene == "MLH1" & transcripts_acmg$hgvs_conseq == "c.-3A>T" & transcripts_acmg$kozak == "GCCAAAATG","comment"] <- "VUS that is likely pathogenic"
-transcripts_acmg[transcripts_acmg$gene == "MSH6" & transcripts_acmg$hgvs_conseq == "c.-3G>T" & transcripts_acmg$kozak == "GTCGGTATG","comment"] <- "VUS that is likely pathogenic"
-transcripts_acmg[transcripts_acmg$gene == "LMNA" & transcripts_acmg$hgvs_conseq == "c.-5C>A" & transcripts_acmg$kozak == "CCGGCCATG","comment"] <- "VUS that is likely pathogenic"
-transcripts_acmg[transcripts_acmg$gene == "RAD51C" & transcripts_acmg$hgvs_conseq == "c.-3G>T" & transcripts_acmg$kozak == "CCTGCGATG","comment"] <- "VUS that is likely pathogenic"
-transcripts_acmg[transcripts_acmg$gene == "RAD51C" & transcripts_acmg$hgvs_conseq == "c.-3G>C" & transcripts_acmg$kozak == "CCTGCGATG","comment"] <- "VUS that is likely pathogenic"
-transcripts_acmg[transcripts_acmg$gene == "KCNQ1" & transcripts_acmg$hgvs_conseq == "c.-3G>C" & transcripts_acmg$kozak == "CTCGTTATG","comment"] <- "VUS that is likely pathogenic"
-transcripts_acmg[transcripts_acmg$gene == "SDHD" & transcripts_acmg$hgvs_conseq == "c.-4C>T" & transcripts_acmg$kozak == "AACGAGATG","comment"] <- "VUS that is likely pathogenic"
-transcripts_acmg[transcripts_acmg$gene == "MUTYH" & transcripts_acmg$hgvs_conseq == "c.-3A>C" & transcripts_acmg$kozak == "GCCATCATG","comment"] <- "VUS that is likely pathogenic"
-transcripts_acmg[transcripts_acmg$gene == "SDHA" & transcripts_acmg$hgvs_conseq == "c.-3G>T" & transcripts_acmg$kozak == "GCAGACATG","comment"] <- "VUS that is likely pathogenic"
-transcripts_acmg[transcripts_acmg$gene == "PMS2" & transcripts_acmg$hgvs_conseq == "c.-2C>G" & transcripts_acmg$kozak == "GCATCCATG","comment"] <- "VUS that is likely pathogenic"
-transcripts_acmg[transcripts_acmg$gene == "PALB2" & transcripts_acmg$hgvs_conseq == "c.-2C>G" & transcripts_acmg$kozak == "TGCCCGATG","comment"] <- "VUS that is likely pathogenic"
+clinvar2_acmg$comment <- NA
+clinvar2_acmg[clinvar2_acmg$gene == "MLH1" & clinvar2_acmg$hgvs_conseq == "c.-3A>T" & clinvar2_acmg$kozak == "GCCAAAATG","comment"] <- "VUS that is likely pathogenic"
+clinvar2_acmg[clinvar2_acmg$gene == "MSH6" & clinvar2_acmg$hgvs_conseq == "c.-3G>T" & clinvar2_acmg$kozak == "GTCGGTATG","comment"] <- "VUS that is likely pathogenic"
+clinvar2_acmg[clinvar2_acmg$gene == "LMNA" & clinvar2_acmg$hgvs_conseq == "c.-5C>A" & clinvar2_acmg$kozak == "CCGGCCATG","comment"] <- "VUS that is likely pathogenic"
+clinvar2_acmg[clinvar2_acmg$gene == "RAD51C" & clinvar2_acmg$hgvs_conseq == "c.-3G>T" & clinvar2_acmg$kozak == "CCTGCGATG","comment"] <- "VUS that is likely pathogenic"
+clinvar2_acmg[clinvar2_acmg$gene == "RAD51C" & clinvar2_acmg$hgvs_conseq == "c.-3G>C" & clinvar2_acmg$kozak == "CCTGCGATG","comment"] <- "VUS that is likely pathogenic"
+clinvar2_acmg[clinvar2_acmg$gene == "KCNQ1" & clinvar2_acmg$hgvs_conseq == "c.-3G>C" & clinvar2_acmg$kozak == "CTCGTTATG","comment"] <- "VUS that is likely pathogenic"
+clinvar2_acmg[clinvar2_acmg$gene == "SDHD" & clinvar2_acmg$hgvs_conseq == "c.-4C>T" & clinvar2_acmg$kozak == "AACGAGATG","comment"] <- "VUS that is likely pathogenic"
+clinvar2_acmg[clinvar2_acmg$gene == "MUTYH" & clinvar2_acmg$hgvs_conseq == "c.-3A>C" & clinvar2_acmg$kozak == "GCCATCATG","comment"] <- "VUS that is likely pathogenic"
+clinvar2_acmg[clinvar2_acmg$gene == "SDHA" & clinvar2_acmg$hgvs_conseq == "c.-3G>T" & clinvar2_acmg$kozak == "GCAGACATG","comment"] <- "VUS that is likely pathogenic"
+clinvar2_acmg[clinvar2_acmg$gene == "PMS2" & clinvar2_acmg$hgvs_conseq == "c.-2C>G" & clinvar2_acmg$kozak == "GCATCCATG","comment"] <- "VUS that is likely pathogenic"
+clinvar2_acmg[clinvar2_acmg$gene == "PALB2" & clinvar2_acmg$hgvs_conseq == "c.-2C>G" & clinvar2_acmg$kozak == "TGCCCGATG","comment"] <- "VUS that is likely pathogenic"
 
-## Now just all possible Kozak changes of ACMG73 genes
-
-transcripts_john_uniq_acmg <- merge(transcripts_john_uniq_snv, acmg_manual_kozaks, by = c("gene","kozak")) %>% distinct() %>% arrange(fold_diff)
-
-```
-
-```{r Bringing in individually exported files}
-
-# Get the list of files in the folder
-folder_path <- "Data/ClinVar/Genes_UTR"  # Replace with the actual folder path
-files <- list.files(folder_path, pattern = "\\.txt$", full.names = TRUE)
-
-# Initialize an empty data table to store the combined rows
-combined_data <- data.table()
-
-# Import and bind all rows from each file
-for (file in files) {
-  data <- fread(file, sep = "\t")
-  combined_data <- rbind(combined_data, data)
-}
-
-combined_data$nchar <- nchar(combined_data$Name)
-combined_data2 <- combined_data %>% filter(nchar <= 29)
-
-clinvar_pos_extractor <- function(text){
-  gsub("[^-0-9]","",strsplit(text,"c.")[[1]][2])
-}
-
-combined_data2$pos <- lapply(combined_data2$Name,clinvar_pos_extractor)
-combined_data3 <- combined_data2 %>% filter(pos %in% seq(-6,-1,1))
-
-clinvar_mut_extractor <- function(text){
-  gsub("[^>A-Z]","",strsplit(text,"c.")[[1]][2])
-}
-
-combined_data3$mut <- lapply(combined_data3$Name,clinvar_mut_extractor)
-
-combined_data3$hgvs_conseq <- paste0("c.",combined_data3$pos,combined_data3$mut)
-
-combined_data4 <- combined_data3[,c("Gene(s)","hgvs_conseq","Condition(s)","Accession","Clinical significance (Last reviewed)")]
-colnames(combined_data4)[1] <- "gene"
-
-## Now merge with prev dataset
-
-transcripts_john_uniq_acmg_clinvar <- merge(transcripts_john_uniq_acmg, combined_data4, by = c("gene","hgvs_conseq")) %>% arrange(fold_diff)
-
-table(transcripts_john_uniq_acmg_clinvar$gene)
 ```
 
 ```{r}
 ## 
-rad51c_orig_wt <- subset(complete_frame4, sequence %in% c("CCTGCGATG","CCTTCGATG"))
+rad51c_orig_wt <- subset(complete_frame4, sequence %in% c("CCTGCGATG","CCTTCGATG", "CCTCCGATG"))
 
 ggplot() + 
-  geom_point(data = rad51c_orig_wt, aes(x = "Rad51C_orig", y = sort_geomean[1])) + 
-  geom_errorbar(data = rad51c_orig_wt, aes(x = "Rad51C_orig", ymin = sort_lower_conf[1], ymax = sort_upper_conf[1])) +
-  geom_point(data = rad51c_orig_wt, aes(x = "Rad51C_mut", y = sort_geomean[2])) + 
-  geom_errorbar(data = rad51c_orig_wt, aes(x = "Rad51C_mut", ymin = sort_lower_conf[2], ymax = sort_upper_conf[2]))
-
+  geom_point(data = rad51c_orig_wt, aes(x = "Rad51C_orig", y = sort_geomean[2])) + 
+  geom_errorbar(data = rad51c_orig_wt, aes(x = "Rad51C_orig", ymin = sort_lower_conf[2], ymax = sort_upper_conf[2])) +
+  geom_point(data = rad51c_orig_wt, aes(x = "Rad51C_mut", y = sort_geomean[3])) + 
+  geom_errorbar(data = rad51c_orig_wt, aes(x = "Rad51C_mut", ymin = sort_lower_conf[3], ymax = sort_upper_conf[3])) +
+  geom_point(data = rad51c_orig_wt, aes(x = "Rad51C_mut2", y = sort_geomean[1])) + 
+  geom_errorbar(data = rad51c_orig_wt, aes(x = "Rad51C_mut2", ymin = sort_lower_conf[1], ymax = sort_upper_conf[1]))
 rad51c_orig_wt$sort_geomean
 
 ```
@@ -2544,7 +2431,7 @@ ggplot() + labs(title = "VSV-G") +
   NULL
 ```
 
-## Now bringing in the mix of various cDNAs
+## Now bringing in the STIM1 experiment
 ```{r Import the STIM1 data}
 klib_raw = read.table("Data/STIM1_Kozak/klib.assembled.tsv", header = TRUE)
 k_r1_raw = read.table("Data/STIM1_Kozak/k_r1.assembled.tsv", header = TRUE)
