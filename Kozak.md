@@ -401,7 +401,7 @@ dox_histograms <- ggplot() + theme(panel.grid.minor = element_blank()) +
   NULL; dox_histograms
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Comparing%20the%20dox%20titration%20with%20Kozak%20sequence%20controls-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Comparing%20the%20dox%20titration%20with%20Kozak%20sequence%20controls-1.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/dox_histograms.pdf", dox_histograms, height = 2.5, width = 4)
@@ -414,7 +414,7 @@ koz_histograms <- ggplot() + theme(panel.grid.minor = element_blank()) +
   NULL; koz_histograms
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Comparing%20the%20dox%20titration%20with%20Kozak%20sequence%20controls-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Comparing%20the%20dox%20titration%20with%20Kozak%20sequence%20controls-2.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/koz_histograms.pdf", koz_histograms, height = 2.5, width = 4)
@@ -457,7 +457,7 @@ Red_blue_scatterplot <-  ggplot() + theme(panel.grid = element_blank(), legend.p
 Red_blue_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/MFI%20of%20library%20with%20controls-1.png)<!-- -->
+![](Kozak_files/figure-gfm/MFI%20of%20library%20with%20controls-1.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/Red_blue_scatterplot.pdf", Red_blue_scatterplot, height = 1.8, width = 2.1)
@@ -474,7 +474,7 @@ Red_nir_densityplot <- ggplot() + theme(panel.grid = element_blank(), legend.pos
 Red_nir_densityplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Comparing%20red%20and%20nir%20for%20the%20recombined%20library-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Comparing%20red%20and%20nir%20for%20the%20recombined%20library-1.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/Red_nir_densityplot.pdf", Red_nir_densityplot, height = 0.8, width = 1.8)
@@ -496,7 +496,7 @@ Flow_library_red_densityplot <- ggplot() + theme(panel.grid = element_blank(), l
 Flow_library_red_densityplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/F237%20MFI%20of%20library%20with%20controls-1.png)<!-- -->
+![](Kozak_files/figure-gfm/F237%20MFI%20of%20library%20with%20controls-1.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/F237_Flow_library_red_densityplot.pdf", Flow_library_red_densityplot, height = 1.75, width = 3)
@@ -516,7 +516,7 @@ Flow_library_densityplot <- ggplot() + theme(panel.grid = element_blank(), legen
 Flow_library_densityplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/F237%20MFI%20of%20library%20with%20controls-2.png)<!-- -->
+![](Kozak_files/figure-gfm/F237%20MFI%20of%20library%20with%20controls-2.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/F237_Flow_library_densityplot.pdf", Flow_library_densityplot, height = 1.75, width = 3)
@@ -538,7 +538,7 @@ Flow_library_red_densityplot <- ggplot() + theme(panel.grid = element_blank(), l
 Flow_library_red_densityplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/F239%20MFI%20of%20library%20with%20controls-1.png)<!-- -->
+![](Kozak_files/figure-gfm/F239%20MFI%20of%20library%20with%20controls-1.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/F239_Flow_library_red_densityplot.pdf", Flow_library_red_densityplot, height = 1.75, width = 3)
@@ -558,7 +558,7 @@ Flow_library_densityplot <- ggplot() + theme(panel.grid = element_blank(), legen
 Flow_library_densityplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/F239%20MFI%20of%20library%20with%20controls-2.png)<!-- -->
+![](Kozak_files/figure-gfm/F239%20MFI%20of%20library%20with%20controls-2.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/F239_Flow_library_densityplot.pdf", Flow_library_densityplot, height = 1.75, width = 3)
@@ -631,7 +631,7 @@ ACE2_staining_scatterplot <- ggplot() + theme(panel.grid.major = element_blank()
 ACE2_staining_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Showing%20how%20near%20infrared%20fluorescence%20correlates%20with%20ACE2%20cell%20surface%20abundance-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Showing%20how%20near%20infrared%20fluorescence%20correlates%20with%20ACE2%20cell%20surface%20abundance-1.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/ACE2_staining_scatterplot.pdf", ACE2_staining_scatterplot, height = 3, width = 5)
@@ -646,6 +646,9 @@ sort2 <- fourWaySortAnalysis(c(80,81,82,83,84,85,86,87)) %>% arrange(desc(w_ave)
 sort3 <- fourWaySortAnalysis(c(104,104,105,105,106,106,107,107)) %>% arrange(desc(w_ave))
 sort4 <- fourWaySortAnalysis(c(89,89,90,90,91,91,92,92)) %>% arrange(desc(w_ave))
 
+#myfiles[c(72,73,74,75,76,77,78,79)]
+#myfiles[c(80,81,82,83,84,85,86,87)]
+#myfiles[c(104,104,105,105,106,106,107,107)]
 #myfiles[c(89,89,90,90,91,91,92,92)]
 ```
 
@@ -673,7 +676,7 @@ Controls_sortseq_plot <- ggplot() +
 Controls_sortseq_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Finding%20bin-wise%20distributions%20of%20high%20and%20low%20control%20variants-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Finding%20bin-wise%20distributions%20of%20high%20and%20low%20control%20variants-1.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/Controls_sortseq_plot.pdf", Controls_sortseq_plot, height = 2, width = 2.5)
@@ -821,16 +824,16 @@ paste("There are this many non-NA score4 weighted averages after the count-based
     ## [1] "There are this many non-NA score4 weighted averages after the count-based filtering: values 3992"
 
 ``` r
-Replicate_wave_scatterplots <- (ggplot() + geom_point(data = sort_combined2, aes(x = sort1, y = sort2), alpha = 0.05) | ggplot() + geom_point(data = sort_combined2, aes(x = sort1, y = sort3), alpha = 0.05) | ggplot() + geom_point(data = sort_combined2, aes(x = sort1, y = sort4), alpha = 0.05)) / (ggplot() + geom_point(data = sort_combined2, aes(x = sort2, y = sort3), alpha = 0.05) | 
-ggplot() + geom_point(data = sort_combined2, aes(x = sort2, y = sort4), alpha = 0.05) | 
-ggplot() + geom_point(data = sort_combined2, aes(x = sort3, y = sort4), alpha = 0.05)) +
+Replicate_wave_scatterplots <- (ggplot() + geom_point(data = sort_combined2, aes(x = sort1, y = sort2), alpha = 0.02) | ggplot() + geom_point(data = sort_combined2, aes(x = sort1, y = sort3), alpha = 0.02) | ggplot() + geom_point(data = sort_combined2, aes(x = sort1, y = sort4), alpha = 0.02)) / (ggplot() + geom_point(data = sort_combined2, aes(x = sort2, y = sort3), alpha = 0.02) | 
+ggplot() + geom_point(data = sort_combined2, aes(x = sort2, y = sort4), alpha = 0.02) | 
+ggplot() + geom_point(data = sort_combined2, aes(x = sort3, y = sort4), alpha = 0.02)) +
   NULL; Replicate_wave_scatterplots
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Making%20a%20all-by-all%20comparis%20of%20replicate%20weighted%20average%20scores-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Making%20a%20all-by-all%20comparis%20of%20replicate%20weighted%20average%20scores-1.png)<!-- -->
 
 ``` r
-ggsave(file = "Plots/Replicate_wave_scatterplots.pdf", Replicate_wave_scatterplots, width = 7, height = 4)
+ggsave(file = "Plots/Replicate_wave_scatterplots.pdf", Replicate_wave_scatterplots, width = 6.5, height = 4)
 ```
 
 ``` r
@@ -843,7 +846,7 @@ for(x in 1:nrow(sort_combined2)){
 ggplot() + geom_histogram(data = sort_combined2, aes(x = sd))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Getting%20summary%20stats%20for%20the%204-way%20sorting-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Getting%20summary%20stats%20for%20the%204-way%20sorting-1.png)<!-- -->
 
 ``` r
 #median(sort_combined2$sd, na.rm = T)
@@ -863,7 +866,7 @@ Mean_weighted_average_histogram <- ggplot() + theme(panel.grid.minor = element_b
 Mean_weighted_average_histogram
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Getting%20summary%20stats%20for%20the%204-way%20sorting-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Getting%20summary%20stats%20for%20the%204-way%20sorting-2.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/Mean_weighted_average_histogram.pdf", Mean_weighted_average_histogram, height = 1.2, width = 3.2)
@@ -878,6 +881,18 @@ paste("Weighted ave of high translation rate GCCACCATG", round(subset(sort_summa
 ```
 
     ## [1] "Weighted ave of high translation rate GCCACCATG 0.69"
+
+``` r
+paste("The minimum weighted average value observed in our dataset", round(min(sort_summary2$sort_geomean),2))
+```
+
+    ## [1] "The minimum weighted average value observed in our dataset 0.13"
+
+``` r
+paste("The maximum weighted average value observed in our dataset", round(max(sort_summary2$sort_geomean),2))
+```
+
+    ## [1] "The maximum weighted average value observed in our dataset 0.91"
 
 ## Now bring in the individual data to see how the sort score correlates with actually MFI measured by flow cytometry
 
@@ -925,7 +940,7 @@ Individual_vs_4way_sort_scatterplot <- ggplot() + theme(panel.grid = element_bla
 Individual_vs_4way_sort_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Bring%20in%20the%20individual%20data-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Bring%20in%20the%20individual%20data-1.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/Individual_vs_4way_sort_scatterplot.png", Individual_vs_4way_sort_scatterplot, height = 3, width = 4)
@@ -948,7 +963,7 @@ Individual_vs_4way_sort_scatterplot2 <- ggplot() + theme(panel.grid = element_bl
   NULL; Individual_vs_4way_sort_scatterplot2
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Bring%20in%20the%20individual%20data-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Bring%20in%20the%20individual%20data-2.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/Individual_vs_4way_sort_scatterplot2.png", Individual_vs_4way_sort_scatterplot2, height = 3, width = 4)
@@ -981,7 +996,7 @@ ggplot() + scale_y_log10(limits = c(0.001,3)) + scale_x_log10(limits = c(0.001,4
   geom_point(data = complete_frame3, aes(x = mfi_lm_norm, y = calibrated_score))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Use%20this%20linear%20model%20to%20transform%20the%204-way%20sort%20values%20into%20calculated%20MFI%20equivalents-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Use%20this%20linear%20model%20to%20transform%20the%204-way%20sort%20values%20into%20calculated%20MFI%20equivalents-1.png)<!-- -->
 
 ``` r
 max(complete_frame3$mfi_lm_norm)
@@ -1017,7 +1032,7 @@ Individual_vs_4way_sort_lm_scatterplot <- ggplot() + theme(panel.grid.minor = el
   geom_text_repel(data = complete_frame3 %>% filter(!is.na(mfi_individual)), aes(x = mfi_lm_norm, y = mfi_individual, label = sequence), color = "red", alpha = 0.6, size = 2) + NULL; Individual_vs_4way_sort_lm_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Use%20this%20model%20to%20transform%20the%204-way%20sort%20values%20into%20calculated%20MFI%20equivalents-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Use%20this%20model%20to%20transform%20the%204-way%20sort%20values%20into%20calculated%20MFI%20equivalents-1.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/Individual_vs_4way_sort_lm_scatterplot.png", Individual_vs_4way_sort_lm_scatterplot, height = 3, width = 4)
@@ -1040,7 +1055,7 @@ Individual_vs_4way_sort_calcd_scatterplot <- ggplot() + theme(panel.grid.minor =
   geom_text_repel(data = complete_frame3 %>% filter(!is.na(mfi_individual)), aes(x = calibrated_score, y = mfi_individual, label = sequence), color = "red", alpha = 0.6, size = 2) + NULL; Individual_vs_4way_sort_calcd_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Use%20this%20model%20to%20transform%20the%204-way%20sort%20values%20into%20calculated%20MFI%20equivalents-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Use%20this%20model%20to%20transform%20the%204-way%20sort%20values%20into%20calculated%20MFI%20equivalents-2.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/Individual_vs_4way_sort_calcd_scatterplot.png", Individual_vs_4way_sort_calcd_scatterplot, height = 3, width = 4)
@@ -1061,7 +1076,11 @@ density_4way_sort_calcd_plot <- ggplot() + theme_bw() +theme(panel.grid.minor = 
 density_4way_sort_calcd_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Make%20a%20singular%20plot%20showing%20the%20above%20scatterplot%20and%20a%20densityplot%20of%20the%20scores%20by%20sequencing-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Make%20a%20singular%20plot%20showing%20the%20above%20scatterplot%20and%20a%20densityplot%20of%20the%20scores%20by%20sequencing-1.png)<!-- -->
+
+``` r
+complete_frame3 <- complete_frame3 %>% filter(!(sequence %in% c("GAGTTAATG","AAACTGATG","AGTAGAATG","CCCATGATG")))
+```
 
 ``` r
 ## Next, import the data from Noderer et al
@@ -1086,7 +1105,7 @@ Noderer_vs_individual_scatterplot <- ggplot() +
   NULL; Noderer_vs_individual_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Noderer%20score%20vs%20individual%20MFI%20graph-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Noderer%20score%20vs%20individual%20MFI%20graph-1.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/Noderer_vs_individual_scatterplot.png", Noderer_vs_individual_scatterplot, height = 4, width = 5)
@@ -1101,7 +1120,7 @@ Noderer_vs_calibrated_score_scatterplot <- ggplot() + theme(panel.grid = element
   NULL; Noderer_vs_calibrated_score_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Noderer%20score%20vs%20individual%20MFI%20graph-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Noderer%20score%20vs%20individual%20MFI%20graph-2.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/Noderer_vs_calibrated_score_scatterplot.png", Noderer_vs_calibrated_score_scatterplot, height = 4, width = 4)
@@ -1113,70 +1132,6 @@ round(cor(log10(complete_frame4$calibrated_score), complete_frame4$noderer, meth
 ```
 
     ## [1] "Correlation coefficients between Noderer data and our sequencing data --> Pearson's r^2: 0.67 Spearman's rho^2: 0.6"
-
-## Seeing if we can model what is going on
-
-``` r
-## Trying a position weight matrix for the calibrated score
-
-pwm_dataframe <- data.frame("n6" = rep(0,4),"n5" = rep(0,4),"n4" = rep(0,4),"n3" = rep(0,4),"n2" = rep(0,4),"n1" = rep(0,4))
-rownames(pwm_dataframe) <- c("A","C","G","T")
-
-for(x in 1:nrow(complete_frame4)){
-  temp_seq <- substr(complete_frame4$sequence[x],1,6)
-  temp_score <- as.numeric(complete_frame4$calibrated_score[x])
-  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,1,1),"n6"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,1,1),"n6"] + temp_score
-  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,2,2),"n5"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,2,2),"n5"] + temp_score
-  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,3,3),"n4"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,3,3),"n4"] + temp_score
-  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,4,4),"n3"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,4,4),"n3"] + temp_score
-  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,5,5),"n2"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,5,5),"n2"] + temp_score
-  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,6,6),"n1"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,6,6),"n1"] + temp_score
-}
-pwm_dataframe2 <- pwm_dataframe / colSums(pwm_dataframe)
-pwm_matrix <- as.matrix(pwm_dataframe2)
-
-## Function for working out the position weight matrix value
-pwm <- function(freq, total, bg=0.25){
-  #using the formulae above
-  p <- (freq + (sqrt(total) * 1/4)) / (total + (4 * (sqrt(total) * 1/4)))
-  log2(p/bg)
-}
-pwm_matrix2 <- pwm(pwm_matrix,6)
-
-## Logo plot 
-proportion <- function(x){
-   rs <- sum(x);
-   return(x / rs);
-}
-
-## Bar chart
-pwm_matrix_melt <- melt(pwm_matrix)
-
-PWM_barplot <- ggplot() + 
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
-  labs(x = "Position along Kozak", y = "Weighted\nfrequency") + 
-  geom_bar(data = pwm_matrix_melt, aes(x = Var2, y = value, fill = Var1), stat = "identity", color = "black")
-PWM_barplot
-```
-
-![](ACE2_Kozak_files/figure-gfm/PSSM%20for%20calibrated_score-1.png)<!-- -->
-
-``` r
-ggsave(file = "plots/PWM_barplot.pdf", PWM_barplot, height = 1.2, width = 3)
-
-PWM_pointplot <- ggplot() + 
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top") + 
-  labs(x = "Position along Kozak", y = "Weighted\nfrequency") + 
-  geom_hline(yintercept = 0.25, linetype = 2, alpha = 0.4) + 
-  geom_point(data = pwm_matrix_melt, aes(x = Var2, y = value, color = Var1, fill = Var1), stat = "identity", shape = 21, size = 2, alpha = 0.5) +
-  NULL; PWM_pointplot
-```
-
-![](ACE2_Kozak_files/figure-gfm/PSSM%20for%20calibrated_score-2.png)<!-- -->
-
-``` r
-ggsave(file = "plots/PWM_pointplot.pdf", PWM_pointplot, height = 2, width = 3.4)
-```
 
 ``` r
 nt_list = c("A","C","G","T")
@@ -1344,45 +1299,11 @@ Pairwise_fold_diff <- ggplot() +
 Pairwise_fold_diff
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Plotting%20the%20pairwise%20differences%20in%20efficiency-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Plotting%20the%20pairwise%20differences%20in%20efficiency-1.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/Pairwise_fold_diff.pdf", Pairwise_fold_diff, height = 2.2, width = 3.4)
 ```
-
-## I want to bring a pssm model back in since this is what they did
-
-## Seeing if we can model what is going on
-
-``` r
-complete_frame4$pwm_score <- NA
-
-for(y in 1:nrow(complete_frame4)){
-  seq <- substr(complete_frame4$sequence[y],1,6) #'AAAAAA'
-  x <- unlist(strsplit(x=seq,split=''))
-  #initialize vector
-  seq_score <- vector()
-  #get the corresponding values
-  for(i in 1:6){
-    seq_score[i] <- pwm_matrix[x[i],i]
-  }
-  complete_frame4$pwm_score[y] <- prod(seq_score)
-}
-
-complete_frame4$pwm_score2 <- complete_frame4$pwm_score / complete_frame4[complete_frame4$sequence == "GCCACCATG","pwm_score"]
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = complete_frame4, aes(x = calibrated_score, y = pwm_score2), alpha = 0.2)
-```
-
-![](ACE2_Kozak_files/figure-gfm/Implementing%20the%20PWM-1.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = complete_frame4, aes(x = noderer, y = pwm_score2), alpha = 0.2)
-```
-
-![](ACE2_Kozak_files/figure-gfm/Implementing%20the%20PWM-2.png)<!-- -->
 
 ## See if we can model the protein abundance amount using a random forest model
 
@@ -1429,14 +1350,14 @@ print(rf_regression)
     ##                      Number of trees: 200
     ## No. of variables tried at each split: 3
     ## 
-    ##           Mean of squared residuals: 0.06772251
-    ##                     % Var explained: 63.3
+    ##           Mean of squared residuals: 0.06790604
+    ##                     % Var explained: 63.07
 
 ``` r
 plot(rf_regression)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Try%20random%20forest-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Try%20random%20forest-1.png)<!-- -->
 
 ``` r
 feature_frame <- data.frame("IncMSE" = importance(rf_regression,type = 1))
@@ -1450,7 +1371,7 @@ rf_regression_importance_plot <- ggplot() + theme_bw() +
 rf_regression_importance_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Try%20random%20forest-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Try%20random%20forest-2.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/rf_regression_importance_plot.png", rf_regression_importance_plot, height = 3.2, width = 2)
@@ -1459,7 +1380,7 @@ ggsave(file = "plots/rf_regression_importance_plot.pdf", rf_regression_importanc
 feature_Frame2 <- data.frame(varImpPlot(rf_regression))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Try%20random%20forest-3.png)<!-- -->
+![](Kozak_files/figure-gfm/Try%20random%20forest-3.png)<!-- -->
 
 ``` r
 ## We can now use the trained model on the validation dataset
@@ -1470,7 +1391,7 @@ test1$predicted_scores <- prediction_test
 ggplot() + scale_x_log10() + scale_y_log10() + geom_point(data = test1, aes(x = calibrated_score, y = predicted_scores))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Try%20random%20forest-4.png)<!-- -->
+![](Kozak_files/figure-gfm/Try%20random%20forest-4.png)<!-- -->
 
 ``` r
 complete_frame4$rf_predict_mfi <- predict(rf_regression,complete_frame4_for_rf[,colnames(test1) != c("calibrated_score","sequence")])
@@ -1479,7 +1400,7 @@ ggplot() + scale_x_log10() + scale_y_log10() +
   geom_point(data = complete_frame4, aes(x = calibrated_score, y = rf_predict_mfi), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Try%20random%20forest-5.png)<!-- -->
+![](Kozak_files/figure-gfm/Try%20random%20forest-5.png)<!-- -->
 
 ``` r
 RF_refined_histogram <- ggplot() + theme(panel.grid.major.y = element_blank()) + 
@@ -1489,7 +1410,7 @@ RF_refined_histogram <- ggplot() + theme(panel.grid.major.y = element_blank()) +
 RF_refined_histogram
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Try%20random%20forest-6.png)<!-- -->
+![](Kozak_files/figure-gfm/Try%20random%20forest-6.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/RF_refined_histogram.pdf", RF_refined_histogram, height = 3, width = 4)
@@ -1503,7 +1424,7 @@ RF_refined_individual_scatterplot <- ggplot() + theme(panel.grid.minor = element
   NULL; RF_refined_individual_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Try%20random%20forest-7.png)<!-- -->
+![](Kozak_files/figure-gfm/Try%20random%20forest-7.png)<!-- -->
 
 ``` r
 RF_refined_individual_scatterplot2 <- ggplot() + theme(panel.grid.minor = element_blank()) + 
@@ -1515,7 +1436,7 @@ RF_refined_individual_scatterplot2 <- ggplot() + theme(panel.grid.minor = elemen
 RF_refined_individual_scatterplot2
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Try%20random%20forest-8.png)<!-- -->
+![](Kozak_files/figure-gfm/Try%20random%20forest-8.png)<!-- -->
 
 ``` r
 RF_refined_individual_scatterplot3 <- ggplot() + theme(panel.grid.minor = element_blank()) + 
@@ -1527,7 +1448,7 @@ RF_refined_individual_scatterplot3 <- ggplot() + theme(panel.grid.minor = elemen
 RF_refined_individual_scatterplot3
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Try%20random%20forest-9.png)<!-- -->
+![](Kozak_files/figure-gfm/Try%20random%20forest-9.png)<!-- -->
 
 ``` r
 paste("Correlation coefficients between our RF-refined scores and the individually assessed MFIs -->","Pearson's:",
@@ -1543,7 +1464,7 @@ round(cor(log10(complete_frame4$rf_predict_mfi), log10(complete_frame4$mfi_indiv
 round(cor(log10(complete_frame4$rf_predict_mfi), log10(complete_frame4$mfi_individual), method = "spearman", use = "complete"),2))
 ```
 
-    ## [1] "Correlation coefficients between our RF-refined scores and the individually assessed MFIs --> Pearson's: 0.91 Spearman's: 0.91"
+    ## [1] "Correlation coefficients between our RF-refined scores and the individually assessed MFIs --> Pearson's: 0.89 Spearman's: 0.91"
 
 ``` r
 ## Comparing to the Noderer et al dataset again with the RF-refined scores
@@ -1554,7 +1475,7 @@ complete_frame4$rf_residuals <- outlier_lm$residuals
 ggplot() + geom_histogram(data = complete_frame4, aes(x = rf_residuals))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Comparing%20to%20the%20Noderer%20et%20al%20dataset%20again%20with%20the%20RF-refined%20scores-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Comparing%20to%20the%20Noderer%20et%20al%20dataset%20again%20with%20the%20RF-refined%20scores-1.png)<!-- -->
 
 ``` r
 ## Try to fit a normal curve to the above distribution? This is done with the MASS package.
@@ -1567,7 +1488,7 @@ ggplot() + geom_density(data = complete_frame4, aes(x = rf_residuals)) +
   geom_density(data = normal_dist_fit, aes(x = prob))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Comparing%20to%20the%20Noderer%20et%20al%20dataset%20again%20with%20the%20RF-refined%20scores-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Comparing%20to%20the%20Noderer%20et%20al%20dataset%20again%20with%20the%20RF-refined%20scores-2.png)<!-- -->
 
 ``` r
 residual_outlier_cutoff1 <- quantile(normal_dist_fit$prob,0.01)
@@ -1599,7 +1520,7 @@ RF_refined_noderer_scatterplot <- ggplot() + theme(panel.grid.minor = element_bl
   NULL; RF_refined_noderer_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Comparing%20to%20the%20Noderer%20et%20al%20dataset%20again%20with%20the%20RF-refined%20scores-3.png)<!-- -->
+![](Kozak_files/figure-gfm/Comparing%20to%20the%20Noderer%20et%20al%20dataset%20again%20with%20the%20RF-refined%20scores-3.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/RF_refined_noderer_scatterplot.png", RF_refined_noderer_scatterplot, height = 4, width = 5)
@@ -1615,7 +1536,7 @@ RF_refined_calibrated_scatterplot <- ggplot() + theme(panel.grid.minor = element
   NULL; RF_refined_calibrated_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Comparing%20to%20the%20Noderer%20et%20al%20dataset%20again%20with%20the%20RF-refined%20scores-4.png)<!-- -->
+![](Kozak_files/figure-gfm/Comparing%20to%20the%20Noderer%20et%20al%20dataset%20again%20with%20the%20RF-refined%20scores-4.png)<!-- -->
 
 ``` r
 paste("Correlation coefficients between Calibrated scores and the Noderer scores -->","Pearson's r^2:",
@@ -1639,7 +1560,13 @@ round(cor(log10(complete_frame4$rf_predict_mfi), complete_frame4$noderer, method
 round(cor(log10(complete_frame4$rf_predict_mfi), complete_frame4$noderer, method = "spearman", use = "complete")^2,2))
 ```
 
-    ## [1] "Correlation coefficients between log10 of RF-refined scores and the Noderer scores --> Pearson's r^2: 0.86 Spearman's rho^2: 0.76"
+    ## [1] "Correlation coefficients between log10 of RF-refined scores and the Noderer scores --> Pearson's r^2: 0.85 Spearman's rho^2: 0.76"
+
+``` r
+paste("The total number of variants taht we scored was", nrow(complete_frame4))
+```
+
+    ## [1] "The total number of variants taht we scored was 4042"
 
 ## OK, this is where we are leaving all of the Kozak scoring. Now onto some applications.
 
@@ -1656,7 +1583,7 @@ Convenient_Kozaks_scatterplot_our_construct <- ggplot() + theme(panel.grid.minor
 Convenient_Kozaks_scatterplot_our_construct
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Coming%20up%20with%20a%20table%20of%20convenient%20Kozak%20sequence%20options-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Coming%20up%20with%20a%20table%20of%20convenient%20Kozak%20sequence%20options-1.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/Convenient_Kozaks_scatterplot_our_construct.png", Convenient_Kozaks_scatterplot_our_construct, height = 3.6, width = 4)
@@ -1676,7 +1603,7 @@ Farrell_Kozaks_scatterplot_our_construct <- ggplot() + theme(panel.grid.minor = 
 Farrell_Kozaks_scatterplot_our_construct
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Looking%20at%20the%20set%20I%20previous%20used%20with%20the%20Bloom%20lab-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Looking%20at%20the%20set%20I%20previous%20used%20with%20the%20Bloom%20lab-1.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/Farrell_Kozaks_scatterplot_our_construct.png", Farrell_Kozaks_scatterplot_our_construct, height = 3.6, width = 4)
@@ -1706,7 +1633,7 @@ Avecedo_scatterplot <- ggplot() + theme(panel.grid = element_blank()) +
   NULL; Avecedo_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Compare%20to%20the%20Acevedo%20data-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Compare%20to%20the%20Acevedo%20data-1.png)<!-- -->
 
 ``` r
   ggsave(file = "Plots/Avecedo_scatterplot.pdf", Avecedo_scatterplot, height = 2, width = 3)
@@ -1747,7 +1674,7 @@ Ambrosini_scatterplot <- ggplot() + theme(panel.grid = element_blank()) +
   NULL; Ambrosini_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Compare%20to%20Ambrosini%20data-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Compare%20to%20Ambrosini%20data-1.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/Ambrosini_scatterplot.pdf", Ambrosini_scatterplot, height = 2, width = 3)
@@ -1755,13 +1682,13 @@ ggsave(file = "Plots/Ambrosini_scatterplot.pdf", Ambrosini_scatterplot, height =
 paste("Pearson's r^2 value between our calibrated scores and the Ambrosini scores", cor(log10(complete_frame4_final2_ambrosini$calibrated_score), complete_frame4_final2_ambrosini$ambrosini, method = "pearson")^2)
 ```
 
-    ## [1] "Pearson's r^2 value between our calibrated scores and the Ambrosini scores 0.55129804646609"
+    ## [1] "Pearson's r^2 value between our calibrated scores and the Ambrosini scores 0.551281236816424"
 
 ``` r
 paste("Spearman's rho^2 value between our calibrated scores and the Ambrosini scores", cor(complete_frame4_final2_ambrosini$calibrated_score, complete_frame4_final2_ambrosini$ambrosini, method = "spearman")^2)
 ```
 
-    ## [1] "Spearman's rho^2 value between our calibrated scores and the Ambrosini scores 0.563080363492006"
+    ## [1] "Spearman's rho^2 value between our calibrated scores and the Ambrosini scores 0.562207917435208"
 
 ``` r
 running_snv_df <- read.csv(file = "Output_datatables/Human_kozak_permutations.csv", header = T, stringsAsFactors = F)
@@ -1821,7 +1748,7 @@ clinvar_confidently_low_mutkozak_list <- unique(clinvar_confidently_low$mut_koza
 paste("The number of Kozak -6 to -1 nt variants found in ClinVar that are confidently measured as potentially low is:",nrow(clinvar_confidently_low))
 ```
 
-    ## [1] "The number of Kozak -6 to -1 nt variants found in ClinVar that are confidently measured as potentially low is: 348"
+    ## [1] "The number of Kozak -6 to -1 nt variants found in ClinVar that are confidently measured as potentially low is: 347"
 
 ``` r
 clinvar2 <- merge(clinvar, running_snv_df, by = c("hgvs_conseq","kozak","mut_kozak"), all.x = T)
@@ -1849,7 +1776,7 @@ Clinvar_Kozak_permutation_fold_densityplot <- ggplot() + theme(panel.grid.minor 
   NULL; Clinvar_Kozak_permutation_fold_densityplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Clinvar%20variants%20of%20seemingly%20low%20score-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Clinvar%20variants%20of%20seemingly%20low%20score-1.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/Clinvar_Kozak_permutation_fold_densityplot.pdf", Clinvar_Kozak_permutation_fold_densityplot, height = 1, width = 3)
@@ -1865,7 +1792,7 @@ Clinvar_Kozak_permutation_fold_densityplot <- ggplot() + theme(panel.grid = elem
   NULL; Clinvar_Kozak_permutation_fold_densityplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Clinvar%20variants%20of%20seemingly%20low%20score-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Clinvar%20variants%20of%20seemingly%20low%20score-2.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/Clinvar_Kozak_permutation_fold_densityplot.pdf", Clinvar_Kozak_permutation_fold_densityplot, height = 1.4, width = 3)
@@ -1895,7 +1822,7 @@ Most_clinvar_grouped_scatterplot <- ggplot() +
   NULL; Most_clinvar_grouped_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/clinvar%20variants%20subsetted%20to%20acmg59-1.png)<!-- -->
+![](Kozak_files/figure-gfm/clinvar%20variants%20subsetted%20to%20acmg59-1.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/Most_clinvar_grouped_scatterplot.pdf", Most_clinvar_grouped_scatterplot, height = 5, width = 3.75)
@@ -2017,27 +1944,6 @@ clinvar2_acmg[clinvar2_acmg$gene == "PMS2" & clinvar2_acmg$hgvs_conseq == "c.-2C
 clinvar2_acmg[clinvar2_acmg$gene == "PALB2" & clinvar2_acmg$hgvs_conseq == "c.-2C>G" & clinvar2_acmg$kozak == "TGCCCGATG","comment"] <- "VUS that is likely pathogenic"
 ```
 
-``` r
-## 
-rad51c_orig_wt <- subset(complete_frame4, sequence %in% c("CCTGCGATG","CCTTCGATG", "CCTCCGATG"))
-
-ggplot() + 
-  geom_point(data = rad51c_orig_wt, aes(x = "Rad51C_orig", y = sort_geomean[2])) + 
-  geom_errorbar(data = rad51c_orig_wt, aes(x = "Rad51C_orig", ymin = sort_lower_conf[2], ymax = sort_upper_conf[2])) +
-  geom_point(data = rad51c_orig_wt, aes(x = "Rad51C_mut", y = sort_geomean[3])) + 
-  geom_errorbar(data = rad51c_orig_wt, aes(x = "Rad51C_mut", ymin = sort_lower_conf[3], ymax = sort_upper_conf[3])) +
-  geom_point(data = rad51c_orig_wt, aes(x = "Rad51C_mut2", y = sort_geomean[1])) + 
-  geom_errorbar(data = rad51c_orig_wt, aes(x = "Rad51C_mut2", ymin = sort_lower_conf[1], ymax = sort_upper_conf[1]))
-```
-
-![](ACE2_Kozak_files/figure-gfm/RAD51C%20plots-1.png)<!-- -->
-
-``` r
-rad51c_orig_wt$sort_geomean
-```
-
-    ## [1] 0.5472100 0.7330360 0.4664375
-
 ## Bringing in the infection data
 
 ``` r
@@ -2059,7 +1965,7 @@ Individual_VSV_infection_plot <- ggplot() + theme_bw() +
 Individual_VSV_infection_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Plotting%20the%20individual%20infection%20data-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Plotting%20the%20individual%20infection%20data-1.png)<!-- -->
 
 ``` r
 Individual_SARS_CoV_infection_plot <- ggplot() + theme_bw() + 
@@ -2072,7 +1978,7 @@ Individual_SARS_CoV_infection_plot <- ggplot() + theme_bw() +
 Individual_SARS_CoV_infection_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Plotting%20the%20individual%20infection%20data-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Plotting%20the%20individual%20infection%20data-2.png)<!-- -->
 
 ``` r
 Individual_SARS_CoV_2_infection_plot <- ggplot() + theme_bw() + 
@@ -2085,7 +1991,7 @@ Individual_SARS_CoV_2_infection_plot <- ggplot() + theme_bw() +
 Individual_SARS_CoV_2_infection_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Plotting%20the%20individual%20infection%20data-3.png)<!-- -->
+![](Kozak_files/figure-gfm/Plotting%20the%20individual%20infection%20data-3.png)<!-- -->
 
 ``` r
 Individual_SARS_CoV_2_Furin_mut_infection_plot <- ggplot() + theme_bw() + 
@@ -2098,7 +2004,7 @@ Individual_SARS_CoV_2_Furin_mut_infection_plot <- ggplot() + theme_bw() +
 Individual_SARS_CoV_2_Furin_mut_infection_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Plotting%20the%20individual%20infection%20data-4.png)<!-- -->
+![](Kozak_files/figure-gfm/Plotting%20the%20individual%20infection%20data-4.png)<!-- -->
 
 ``` r
 Combined_individual <- (Individual_VSV_infection_plot | Individual_SARS_CoV_infection_plot) / (Individual_SARS_CoV_2_infection_plot | Individual_SARS_CoV_2_Furin_mut_infection_plot)
@@ -2106,7 +2012,7 @@ Combined_individual <- (Individual_VSV_infection_plot | Individual_SARS_CoV_infe
 Combined_individual
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Plotting%20the%20individual%20infection%20data-5.png)<!-- -->
+![](Kozak_files/figure-gfm/Plotting%20the%20individual%20infection%20data-5.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/Combined_individual.pdf", Combined_individual, height = 4, width = 4.25)
@@ -2218,7 +2124,7 @@ vsv_enrichment_summary2 <- merge(vsv_enrichment_summary, vsv_enrichment[,c("sequ
 complete_frame5 <- merge(complete_frame4, s1_enrichment_summary2[,c("sequence","geomean")], by = "sequence", all = T)
 complete_frame5 <- merge(complete_frame5, s2_enrichment_summary2[,c("sequence","geomean")], by = "sequence", all.x = T)
 complete_frame5 <- merge(complete_frame5, vsv_enrichment_summary2[,c("sequence","geomean")], by = "sequence", all.x = T)
-colnames(complete_frame5) <- c("sequence","sort_geomean_log10","sort_geomean","sort_upper_conf","sort_lower_conf","mfi_lm_norm","calibrated_score","mfi_individual","noderer","rf_predict_mfi","imputed_score","residuals","generalized_imputed_score","s1","s2","vsv")
+colnames(complete_frame5) <- c("sequence","sort_geomean_log10","sort_geomean","sort_upper_conf","sort_lower_conf","mfi_lm_norm","calibrated_score","mfi_individual","noderer","rf_predict_mfi","residuals","s1","s2","vsv")
 ```
 
 ``` r
@@ -2229,7 +2135,7 @@ Sort_vs_SARS2_scatterplot <- ggplot() + scale_y_log10(limits = c(0.003,10), expa
 Sort_vs_SARS2_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Looking%20at%20correlations%20between%20abundance%20and%20infection%20for%20SARS2-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Looking%20at%20correlations%20between%20abundance%20and%20infection%20for%20SARS2-1.png)<!-- -->
 
 ``` r
 Noderer_vs_SARS2_scatterplot <- ggplot() + scale_y_log10(limits = c(0.003,10), expand = c(0,0)) + 
@@ -2239,7 +2145,7 @@ Noderer_vs_SARS2_scatterplot <- ggplot() + scale_y_log10(limits = c(0.003,10), e
 Noderer_vs_SARS2_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Looking%20at%20correlations%20between%20abundance%20and%20infection%20for%20SARS2-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Looking%20at%20correlations%20between%20abundance%20and%20infection%20for%20SARS2-2.png)<!-- -->
 
 ``` r
 calibrated_score_vs_SARS2_scatterplot <- ggplot() + scale_x_log10(limits = c(0.01,1.4), expand = c(0,0)) + scale_y_log10(limits = c(0.003,10), expand = c(0,0)) + 
@@ -2248,7 +2154,7 @@ calibrated_score_vs_SARS2_scatterplot <- ggplot() + scale_x_log10(limits = c(0.0
   NULL; calibrated_score_vs_SARS2_scatterplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Looking%20at%20correlations%20between%20abundance%20and%20infection%20for%20SARS2-3.png)<!-- -->
+![](Kozak_files/figure-gfm/Looking%20at%20correlations%20between%20abundance%20and%20infection%20for%20SARS2-3.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/calibrated_score_vs_SARS2_scatterplot.png", calibrated_score_vs_SARS2_scatterplot, height = 4, width = 6)
@@ -2290,7 +2196,7 @@ Scaled_individual_multiplex_s2_plot <- ggplot() + theme(panel.grid = element_bla
   NULL; Scaled_individual_multiplex_s2_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Comparisons%20with%20individual%20infections-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Comparisons%20with%20individual%20infections-1.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/Scaled_individual_multiplex_s2_plot.pdf", Scaled_individual_multiplex_s2_plot, height = 1.5, width = 1.5)
@@ -2305,7 +2211,7 @@ Scaled_individual_multiplex_s1_plot <- ggplot() + theme(panel.grid = element_bla
   NULL; Scaled_individual_multiplex_s1_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Comparisons%20with%20individual%20infections-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Comparisons%20with%20individual%20infections-2.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/Scaled_individual_multiplex_s1_plot.pdf", Scaled_individual_multiplex_s1_plot, height = 1.5, width = 1.5)
@@ -2320,14 +2226,14 @@ Scaled_individual_multiplex_vsv_plot <- ggplot() + theme(panel.grid = element_bl
   NULL; Scaled_individual_multiplex_vsv_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Comparisons%20with%20individual%20infections-3.png)<!-- -->
+![](Kozak_files/figure-gfm/Comparisons%20with%20individual%20infections-3.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/Scaled_individual_multiplex_vsv_plot.pdf", Scaled_individual_multiplex_vsv_plot, height = 1.5, width = 1.5)
 ```
 
 ``` r
-write.csv(file = "Output_datatables/Kozak_infection.csv", complete_frame6[,c("sequence","imputed_score","calibrated_score","s2","s1","vsv","individual_s2","individual_s1","individual_vsv")], row.names = F, quote = F)
+write.csv(file = "Output_datatables/Kozak_infection.csv", complete_frame6[,c("sequence","calibrated_score","s2","s1","vsv","individual_s2","individual_s1","individual_vsv")], row.names = F, quote = F)
 ```
 
 ## Calculate derivatives of the slope
@@ -2357,7 +2263,7 @@ ggplot() +
   NULL
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-1.png)<!-- -->
 
 ``` r
 calibrated_vsv_loess_plot <- ggplot() + theme(panel.grid = element_blank()) + 
@@ -2372,7 +2278,7 @@ calibrated_vsv_loess_plot <- ggplot() + theme(panel.grid = element_blank()) +
   NULL; calibrated_vsv_loess_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-2.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/calibrated_vsv_loess_plot.pdf", calibrated_vsv_loess_plot, height = 1.5, width = 2)
@@ -2384,7 +2290,7 @@ ggplot() +
   NULL
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-3.png)<!-- -->
+![](Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-3.png)<!-- -->
 
 ``` r
 calibrated_s1_loess_plot <- ggplot() + theme(panel.grid = element_blank()) + 
@@ -2399,7 +2305,7 @@ calibrated_s1_loess_plot <- ggplot() + theme(panel.grid = element_blank()) +
   NULL; calibrated_s1_loess_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-4.png)<!-- -->
+![](Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-4.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/calibrated_s1_loess_plot.pdf", calibrated_s1_loess_plot, height = 1.5, width = 2)
@@ -2411,7 +2317,7 @@ ggplot() +
   NULL
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-5.png)<!-- -->
+![](Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-5.png)<!-- -->
 
 ``` r
 calibrated_s2_loess_plot <- ggplot() + theme(panel.grid = element_blank()) + 
@@ -2426,25 +2332,25 @@ calibrated_s2_loess_plot <- ggplot() + theme(panel.grid = element_blank()) +
   NULL; calibrated_s2_loess_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-6.png)<!-- -->
+![](Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-6.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/calibrated_s2_loess_plot.pdf", calibrated_s2_loess_plot, height = 1.5, width = 2)
 
 ggplot() + 
-  scale_x_log10() + scale_y_log10() + 
+  scale_x_log10() + #scale_y_log10() + 
   geom_line(data = complete_frame5_vsvloess, aes(x = calibrated_score, y = value)) +
   geom_line(data = complete_frame5_s1loess, aes(x = calibrated_score, y = value), color = "red") +
   geom_line(data = complete_frame5_s2loess, aes(x = calibrated_score, y = value), color = "green") +
   NULL
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-7.png)<!-- -->
+![](Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-7.png)<!-- -->
 
 ``` r
 calibrated_combined_loess_plot <- ggplot() + theme(panel.grid = element_blank()) + 
   scale_x_log10(limits = c(0.01,2), expand = c(0,0)) + scale_y_log10(limits = c(0.008,10)) + 
-  labs(x = "calibrated abundance", y = "Enrichment in infected cells", title = "SARS-CoV-2") +
+  labs(x = "calibrated abundance", y = "Enrichment in infected cells", title = "") +
   #geom_abline(intercept = 0, slope = 1, linetype = 2, alpha = 0.4, color = "black") +
   geom_line(data = complete_frame5_vsvloess, aes(x = calibrated_score, y = 10^value), size = 2, alpha = 0.4) +
   geom_line(data = complete_frame5_s1loess, aes(x = calibrated_score, y = 10^value), color = "red", size = 2, alpha = 0.4) +
@@ -2453,7 +2359,7 @@ calibrated_combined_loess_plot <- ggplot() + theme(panel.grid = element_blank())
   NULL; calibrated_combined_loess_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-8.png)<!-- -->
+![](Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-8.png)<!-- -->
 
 ``` r
 ggsave(file = "plots/calibrated_combined_loess_plot.pdf", calibrated_combined_loess_plot, height = 1.5, width = 2)
@@ -2466,15 +2372,7 @@ for(x in 2:nrow(complete_frame5_vsvloess)){
   complete_frame5_s1loess$derivative[x] <- ((log10(complete_frame5_s1loess$value[x]) - log10(complete_frame5_s1loess$value[x-1])) / (log10(complete_frame5_s1loess$calibrated_score[x]) - log10(complete_frame5_s1loess$calibrated_score[x-1])))
   complete_frame5_s2loess$derivative[x] <- ((log10(complete_frame5_s2loess$value[x]) - log10(complete_frame5_s2loess$value[x-1])) / (log10(complete_frame5_s2loess$calibrated_score[x]) - log10(complete_frame5_s2loess$calibrated_score[x-1])))
 }
-
-ggplot() + scale_x_log10() + scale_y_continuous(limits = c(-1,3)) +
-  geom_smooth(data = complete_frame5_vsvloess, aes(x = calibrated_score, y = derivative)) +
-  geom_smooth(data = complete_frame5_s1loess, aes(x = calibrated_score, y = derivative), color = "red") +
-  geom_smooth(data = complete_frame5_s2loess, aes(x = calibrated_score, y = derivative), color = "green") +
-  NULL
 ```
-
-![](ACE2_Kozak_files/figure-gfm/Calculate%20derivatives%20of%20the%20slope-9.png)<!-- -->
 
 ## Can we use position1 as a possible identifier position?
 
@@ -2498,7 +2396,7 @@ First_nucleotide_held_constant_densityplot <- ggplot() + theme_bw() + labs(x = "
 First_nucleotide_held_constant_densityplot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Using%20position1%20as%20a%20possible%20identifier%20position-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Using%20position1%20as%20a%20possible%20identifier%20position-1.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/First_nucleotide_held_constant_densityplot.pdf", First_nucleotide_held_constant_densityplot, height = 3, width = 5)
@@ -2516,7 +2414,7 @@ First_nucleotide_held_constant_histogram <- ggplot() + theme_bw() +
   NULL; First_nucleotide_held_constant_histogram
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Using%20position1%20as%20a%20possible%20identifier%20position-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Using%20position1%20as%20a%20possible%20identifier%20position-2.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/First_nucleotide_held_constant_histogram.pdf", First_nucleotide_held_constant_histogram, height = 2, width = 2)
@@ -2561,7 +2459,7 @@ Low_density_cell_image <- ggplot() + theme_minimal() +
 Low_density_cell_image
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Make%20a%20visual%20representation%20of%20receptor%20density-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Make%20a%20visual%20representation%20of%20receptor%20density-1.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/Low_density_cell_image.pdf", Low_density_cell_image, height = 0.55, width = 0.55)
@@ -2578,7 +2476,7 @@ Med_density_cell_image <- ggplot() + theme_minimal() +
 Med_density_cell_image
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Make%20a%20visual%20representation%20of%20receptor%20density-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Make%20a%20visual%20representation%20of%20receptor%20density-2.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/Med_density_cell_image.pdf", Med_density_cell_image, height = 0.55, width = 0.55)
@@ -2595,7 +2493,7 @@ High_density_cell_image <- ggplot() + theme_minimal() +
 High_density_cell_image
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Make%20a%20visual%20representation%20of%20receptor%20density-3.png)<!-- -->
+![](Kozak_files/figure-gfm/Make%20a%20visual%20representation%20of%20receptor%20density-3.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/High_density_cell_image.pdf", High_density_cell_image, height = 0.55, width = 0.55)
@@ -2607,39 +2505,21 @@ mini_lib_plasmid <- read.delim(file = "Data/Amplicon_EZ/ACE2-Kozak-mini-library-
 mini_lib_plasmid_counted <- count(mini_lib_plasmid, kozak_sequence)
 
 ## First compare all of the unselecteds for the first experiment
-sa1_neg_1 <- read.delim(file = myfiles[152], sep = "\t")
-sa1_neg_2 <- read.delim(file = myfiles[153], sep = "\t")
-sa1_neg_3 <- read.delim(file = myfiles[154], sep = "\t")
+sa1_neg_1 <- read.delim(file = myfiles[153], sep = "\t")
+sa1_neg_2 <- read.delim(file = myfiles[154], sep = "\t")
 
 sa1_negs <- merge(sa1_neg_1, sa1_neg_2, by = "X", all.x = T)
-sa1_negs <- merge(sa1_negs, sa1_neg_3, by = "X", all.x = T)
-colnames(sa1_negs) <- c("kozak","neg1","neg2","neg3")
+colnames(sa1_negs) <- c("kozak","neg1","neg2")
 sa1_negs$n1 <- substr(sa1_negs$kozak,1,1)
 sa1_negs <- merge(sa1_negs, kozak_and_variant_key, by = "n1", all.x = T)
 
-ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "I0152", y = "I0153") +
+ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "I0153", y = "I0154") +
   geom_point(data = sa1_negs, aes(x = neg1, y = neg2, color = variant), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Now%20looking%20at%20the%20mini-library%20data-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Now%20looking%20at%20the%20mini-library%20data-1.png)<!-- -->
 
 ``` r
-ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "I0152", y = "I0154") +
-  geom_point(data = sa1_negs, aes(x = neg1, y = neg3, color = variant), alpha = 0.2)
-```
-
-![](ACE2_Kozak_files/figure-gfm/Now%20looking%20at%20the%20mini-library%20data-2.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "I0153", y = "I0154") +
-  geom_point(data = sa1_negs, aes(x = neg2, y = neg3, color = variant), alpha = 0.2)
-```
-
-![](ACE2_Kozak_files/figure-gfm/Now%20looking%20at%20the%20mini-library%20data-3.png)<!-- -->
-
-``` r
-## I guess Ihave to figure out why the no infection looks slightly differen than the infected and not selected
-
 ## First compare all of the unselecteds for the second experiment
 sa2_neg_1 <- read.delim(file = myfiles[168], sep = "\t")
 sa2_neg_2 <- read.delim(file = myfiles[169], sep = "\t")
@@ -2655,25 +2535,25 @@ ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "I0168", y = "I0169") +
   geom_point(data = sa2_negs, aes(x = neg1, y = neg2, color = variant), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Now%20looking%20at%20the%20mini-library%20data-4.png)<!-- -->
+![](Kozak_files/figure-gfm/Now%20looking%20at%20the%20mini-library%20data-2.png)<!-- -->
 
 ``` r
 ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "I0168", y = "I0170") +
   geom_point(data = sa2_negs, aes(x = neg1, y = neg3, color = variant), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Now%20looking%20at%20the%20mini-library%20data-5.png)<!-- -->
+![](Kozak_files/figure-gfm/Now%20looking%20at%20the%20mini-library%20data-3.png)<!-- -->
 
 ``` r
 ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "I0169", y = "I0170") +
   geom_point(data = sa2_negs, aes(x = neg2, y = neg3, color = variant), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Now%20looking%20at%20the%20mini-library%20data-6.png)<!-- -->
+![](Kozak_files/figure-gfm/Now%20looking%20at%20the%20mini-library%20data-4.png)<!-- -->
 
 ``` r
 ## Write tables that can b4 used as neg controls
-sa1_neg <- rbind(sa1_neg_1, sa1_neg_2, sa1_neg_3) %>% group_by(X) %>% summarize(count = sum(count))
+sa1_neg <- rbind(sa1_neg_1, sa1_neg_2) %>% group_by(X) %>% summarize(count = sum(count))
 colnames(sa1_neg) <- c("","count")
 write.table(file = "Data/NextSeq003/sa1_unselected.tsv", sa1_neg, row.names = F, quote = F, sep = "\t")
 
@@ -2688,7 +2568,7 @@ ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "SA1", y = "SA2") +
   geom_point(data = sa1_sa2_comb, aes(x = count.x, y = count.y), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Now%20looking%20at%20the%20mini-library%20data-7.png)<!-- -->
+![](Kozak_files/figure-gfm/Now%20looking%20at%20the%20mini-library%20data-5.png)<!-- -->
 
 ``` r
 sa1_sa2_comb2 <- merge(sa1_sa2_comb, mini_lib_plasmid_counted,  by = "kozak_sequence")
@@ -2707,21 +2587,29 @@ ggplot() + scale_x_log10() + scale_y_log10() +
   geom_point(data = sa1_vsv_counts, aes(x = low, y = high), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/VSV%20kozak%20and%20sequence%20rep1-1.png)<!-- -->
+![](Kozak_files/figure-gfm/VSV%20kozak%20and%20sequence%20rep1-1.png)<!-- -->
 
 ``` r
 ggplot() + scale_x_log10() + scale_y_log10() + 
   geom_point(data = sa1_vsv_counts, aes(x = low, y = low2), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/VSV%20kozak%20and%20sequence%20rep1-2.png)<!-- -->
+![](Kozak_files/figure-gfm/VSV%20kozak%20and%20sequence%20rep1-2.png)<!-- -->
 
 ``` r
 ggplot() + scale_x_log10() + scale_y_log10() + 
   geom_point(data = sa1_vsv_counts, aes(x = high, y = low2), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/VSV%20kozak%20and%20sequence%20rep1-3.png)<!-- -->
+![](Kozak_files/figure-gfm/VSV%20kozak%20and%20sequence%20rep1-3.png)<!-- -->
+
+``` r
+myfiles[c(192,193,155,156,167)]
+```
+
+    ## [1] "Data/NextSeq003/sa1_unselected.tsv" "Data/NextSeq003/sa2_unselected.tsv"
+    ## [3] "Data/NextSeq003/I0155_lib.tsv"      "Data/NextSeq003/I0156_lib.tsv"     
+    ## [5] "Data/NextSeq003/I0167_lib.tsv"
 
 ``` r
 sa1_vsv_r1 <- makeExperimentFrame2(c(192,193,155,155)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(total_reads))
@@ -2745,33 +2633,18 @@ ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "Calibrated abundance le
   facet_grid(cols = vars(variant))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/VSV%20kozak%20and%20sequence%20rep1-4.png)<!-- -->
+![](Kozak_files/figure-gfm/VSV%20kozak%20and%20sequence%20rep1-4.png)<!-- -->
 
 ``` r
 ## Rep 2
-sa2_vsv_low <- read.delim(file = myfiles[171], sep = "\t")
-sa2_vsv_high <- read.delim(file = myfiles[172], sep = "\t")
-sa2_vsv_low2 <- read.delim(file = myfiles[183], sep = "\t")
-sa2_vsv_counts <- merge(sa2_vsv_low, sa2_vsv_high, by = "X", all = T)
-sa2_vsv_counts <- merge(sa2_vsv_counts, sa2_vsv_low2, by = "X", all = T)
-colnames(sa2_vsv_counts) <- c("kozak","low","high","low2")
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa2_vsv_counts, aes(x = low, y = high), alpha = 0.2)
-```
-
-![](ACE2_Kozak_files/figure-gfm/VSV%20kozak%20and%20sequence%20rep1-5.png)<!-- -->
-
-``` r
+sa1_vsv_r4 <- read.delim(file = myfiles[171], sep = "\t")
+sa1_vsv_r5 <- read.delim(file = myfiles[172], sep = "\t")
+sa1_vsv_r6 <- read.delim(file = myfiles[183], sep = "\t")
+sa2_vsv_counts <- merge(sa1_vsv_r4, sa1_vsv_r5, by = "X", all = T)
+sa2_vsv_counts <- merge(sa2_vsv_counts, sa1_vsv_r6, by = "X", all = T)
+colnames(sa2_vsv_counts) <- c("kozak","r4","r5","r6")
 ## I0171 is missing data for some reason
 
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa2_vsv_counts, aes(x = high, y = low2), alpha = 0.2)
-```
-
-![](ACE2_Kozak_files/figure-gfm/VSV%20kozak%20and%20sequence%20rep1-6.png)<!-- -->
-
-``` r
 sa2_vsv <- makeExperimentFrame2(c(192,193,172,183)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
 sa2_vsv <- merge(sa2_vsv, complete_frame6[,c("sequence","calibrated_score")])
 sa2_vsv$n1 <- substr(sa2_vsv$sequence,1,1)
@@ -2785,7 +2658,7 @@ ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "Calibrated abundance le
   facet_grid(cols = vars(variant))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/VSV%20kozak%20and%20sequence%20rep1-7.png)<!-- -->
+![](Kozak_files/figure-gfm/VSV%20kozak%20and%20sequence%20rep1-5.png)<!-- -->
 
 ``` r
 ## Now average the values
@@ -2801,35 +2674,19 @@ ggplot() + scale_x_log10() + scale_y_log10(limits = c(0.003,10)) + labs(x = "Cal
   facet_grid(cols = vars(variant))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/VSV%20kozak%20and%20sequence%20rep1-8.png)<!-- -->
+![](Kozak_files/figure-gfm/VSV%20kozak%20and%20sequence%20rep1-6.png)<!-- -->
 
 ``` r
-sa1_s1_low <- read.delim(file = myfiles[157], sep = "\t")
-sa1_s1_high <- read.delim(file = myfiles[158], sep = "\t")
-sa1_s1_low2 <- read.delim(file = myfiles[165], sep = "\t")
-sa1_s1_counts <- merge(sa1_s1_low, sa1_s1_high, by = "X", all = T)
-sa1_s1_counts <- merge(sa1_s1_counts, sa1_s1_low2, by = "X", all = T)
-colnames(sa1_s1_counts) <- c("kozak","low","high","low2")
+## Custom test pair
+test_pair1 <- read.delim(file = myfiles[181], sep = "\t")
+test_pair2 <- read.delim(file = myfiles[182], sep = "\t")
+test_pair <- merge(test_pair1, test_pair2, by = "X", all = T)
 
 ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa1_s1_counts, aes(x = low, y = high), alpha = 0.2)
+  geom_point(data = test_pair, aes(x = count.x, y = count.y), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/SARS1%20kozak%20and%20sequence%20rep1-1.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa1_s1_counts, aes(x = low, y = low2), alpha = 0.2)
-```
-
-![](ACE2_Kozak_files/figure-gfm/SARS1%20kozak%20and%20sequence%20rep1-2.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa1_s1_counts, aes(x = high, y = low2), alpha = 0.2)
-```
-
-![](ACE2_Kozak_files/figure-gfm/SARS1%20kozak%20and%20sequence%20rep1-3.png)<!-- -->
+![](Kozak_files/figure-gfm/Pairwise%20tests%20for%20SARS1%20samples-1.png)<!-- -->
 
 ``` r
 sa1_s1_r1 <- makeExperimentFrame2(c(153,154,157,157)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
@@ -2853,7 +2710,7 @@ ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "Calibrated abundance le
   facet_grid(cols = vars(variant))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/SARS1%20kozak%20and%20sequence%20rep1-4.png)<!-- -->
+![](Kozak_files/figure-gfm/SARS1%20kozak%20and%20sequence%20rep1-1.png)<!-- -->
 
 ``` r
 ## Rep 2
@@ -2864,25 +2721,12 @@ sa2_s1_counts <- merge(sa2_s1_low, sa2_s1_high, by = "X", all = T)
 sa2_s1_counts <- merge(sa2_s1_counts, sa2_s1_low2, by = "X", all = T)
 colnames(sa2_s1_counts) <- c("kozak","low","high","low2")
 
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa2_s1_counts, aes(x = low, y = high), alpha = 0.2)
+myfiles[c(169,170,173,174,182)]
 ```
 
-![](ACE2_Kozak_files/figure-gfm/SARS1%20kozak%20and%20sequence%20rep1-5.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa2_s1_counts, aes(x = low, y = low2), alpha = 0.2)
-```
-
-![](ACE2_Kozak_files/figure-gfm/SARS1%20kozak%20and%20sequence%20rep1-6.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa2_s1_counts, aes(x = high, y = low2), alpha = 0.2)
-```
-
-![](ACE2_Kozak_files/figure-gfm/SARS1%20kozak%20and%20sequence%20rep1-7.png)<!-- -->
+    ## [1] "Data/NextSeq003/I0169_lib.tsv" "Data/NextSeq003/I0170_lib.tsv"
+    ## [3] "Data/NextSeq003/I0173_lib.tsv" "Data/NextSeq003/I0174_lib.tsv"
+    ## [5] "Data/NextSeq003/I0182_lib.tsv"
 
 ``` r
 sa2_s1_r1 <- makeExperimentFrame2(c(169,170,173,173)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
@@ -2906,7 +2750,7 @@ ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "Calibrated abundance le
   facet_grid(cols = vars(variant))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/SARS1%20kozak%20and%20sequence%20rep1-8.png)<!-- -->
+![](Kozak_files/figure-gfm/SARS1%20kozak%20and%20sequence%20rep1-2.png)<!-- -->
 
 ``` r
 ## Now average the values
@@ -2922,7 +2766,7 @@ ggplot() + scale_x_log10() + scale_y_log10(limits = c(0.003,3)) + labs(x = "Cali
   facet_grid(cols = vars(variant))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/SARS1%20kozak%20and%20sequence%20rep1-9.png)<!-- -->
+![](Kozak_files/figure-gfm/SARS1%20kozak%20and%20sequence%20rep1-3.png)<!-- -->
 
 ``` r
 sa1_s2_low <- read.delim(file = myfiles[159], sep = "\t")
@@ -2936,21 +2780,21 @@ ggplot() + scale_x_log10() + scale_y_log10() +
   geom_point(data = sa1_s2_counts, aes(x = low, y = high), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-1.png)<!-- -->
+![](Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-1.png)<!-- -->
 
 ``` r
 ggplot() + scale_x_log10() + scale_y_log10() + 
   geom_point(data = sa1_s2_counts, aes(x = low, y = low2), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-2.png)<!-- -->
+![](Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-2.png)<!-- -->
 
 ``` r
 ggplot() + scale_x_log10() + scale_y_log10() + 
   geom_point(data = sa1_s2_counts, aes(x = high, y = low2), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-3.png)<!-- -->
+![](Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-3.png)<!-- -->
 
 ``` r
 sa1_s2_r1 <- makeExperimentFrame2(c(153,154,159,159)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
@@ -2974,7 +2818,7 @@ ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "Calibrated abundance le
   facet_grid(cols = vars(variant))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-4.png)<!-- -->
+![](Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-4.png)<!-- -->
 
 ``` r
 ## Rep 2
@@ -2989,21 +2833,21 @@ ggplot() + scale_x_log10() + scale_y_log10() +
   geom_point(data = sa2_s2_counts, aes(x = low, y = high), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-5.png)<!-- -->
+![](Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-5.png)<!-- -->
 
 ``` r
 ggplot() + scale_x_log10() + scale_y_log10() + 
   geom_point(data = sa2_s2_counts, aes(x = low, y = low2), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-6.png)<!-- -->
+![](Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-6.png)<!-- -->
 
 ``` r
 ggplot() + scale_x_log10() + scale_y_log10() + 
   geom_point(data = sa2_s2_counts, aes(x = high, y = low2), alpha = 0.2)
 ```
 
-![](ACE2_Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-7.png)<!-- -->
+![](Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-7.png)<!-- -->
 
 ``` r
 sa2_s2_r1 <- makeExperimentFrame2(c(169,170,175,175)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
@@ -3027,7 +2871,7 @@ ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "Calibrated abundance le
   facet_grid(cols = vars(variant))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-8.png)<!-- -->
+![](Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-8.png)<!-- -->
 
 ``` r
 ## Now average the values
@@ -3043,7 +2887,7 @@ ggplot() + scale_x_log10() + scale_y_log10(limits = c(0.003,3)) + labs(x = "Cali
   facet_grid(cols = vars(variant))
 ```
 
-![](ACE2_Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-9.png)<!-- -->
+![](Kozak_files/figure-gfm/SARS2%20kozak%20and%20sequence%20rep1-9.png)<!-- -->
 
 ``` r
 template_seqabund_dataframe <- data.frame("virus" = c("VSV","SARS-CoV","SARS-CoV-2"),
@@ -3064,7 +2908,7 @@ Sequence_and_abundance_scatterplots <- ggplot() + theme(panel.grid = element_bla
   NULL; Sequence_and_abundance_scatterplots
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Making%20a%20combined%20graph%20for%20the%20minilibrary%20data-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Making%20a%20combined%20graph%20for%20the%20minilibrary%20data-1.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/Sequence_and_abundance_scatterplots.pdf", Sequence_and_abundance_scatterplots, height = 2.3, width = 4.5)
@@ -3073,13 +2917,13 @@ ggsave(file = "Plots/Sequence_and_abundance_scatterplots.pdf", Sequence_and_abun
 Sequence_and_abundance_lineplots <- ggplot() + theme(panel.grid = element_blank(), legend.position = "bottom") + 
   scale_x_log10() + scale_y_log10(limits = c(0.1,3)) + labs(x = "calibrated abundance", y = "Enrichment upon infection") +
   #geom_hline(data = template_seqabund_dataframe, (aes(yintercept = template)), color = "purple", alpha = 0.5, size = 1) +
-  #stat_smooth(data= sequence_abundance_compiled, aes(x = calibrated_score, y = ave_enrichment, color = variant), geom='line', alpha=1, se=FALSE) +
-  geom_smooth(data= sequence_abundance_compiled, aes(x = calibrated_score, y = ave_enrichment, color = variant), alpha=0.1, size = 0.5) +
+  geom_point(data = sequence_abundance_compiled, aes(x = calibrated_score, y = ave_enrichment), alpha = 0, size = 1) +
+  stat_smooth(data= sequence_abundance_compiled, aes(x = calibrated_score, y = ave_enrichment, color = variant), geom='line', alpha=0.6, se=FALSE, size = 2) +
   facet_grid(cols = vars(virus)) +
   NULL; Sequence_and_abundance_lineplots
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Making%20a%20combined%20graph%20for%20the%20minilibrary%20data-2.png)<!-- -->
+![](Kozak_files/figure-gfm/Making%20a%20combined%20graph%20for%20the%20minilibrary%20data-2.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/Sequence_and_abundance_lineplots.pdf", Sequence_and_abundance_lineplots, height = 2, width = 4.25)
@@ -3113,7 +2957,7 @@ ggplot() + labs(title = "SARS-CoV Spike") +
   NULL
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Performing%20LOESS%20off%20minilibrary%20data%20for%20SARS1-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Performing%20LOESS%20off%20minilibrary%20data%20for%20SARS1-1.png)<!-- -->
 
 ``` r
 ## Now SARS2 with the ACE2 mutants
@@ -3140,7 +2984,7 @@ ggplot() + labs(title = "SARS-CoV-2 Spike") +
   NULL
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Performing%20LOESS%20off%20minilibrary%20data%20for%20SARS2-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Performing%20LOESS%20off%20minilibrary%20data%20for%20SARS2-1.png)<!-- -->
 
 ``` r
 ## Now VSV with the ACE2 mutants
@@ -3157,7 +3001,7 @@ vsv_d355n_loess <- loess(ave_enrichment~calibrated_score, data=sequence_abundanc
 sequence_abundance_compiled_vsv_d355n_loess <- cbind(newvals, value=predict(vsv_d355n_loess, newvals))
 
 ggplot() + labs(title = "VSV-G") +
-  scale_x_log10(limits = c(0.02,1)) + scale_y_log10(limits = c(0.1,1.5)) + 
+  scale_x_log10(limits = c(0.02,1.5)) + scale_y_log10(limits = c(0.1,1.5)) + 
   geom_point(data = sequence_abundance_compiled_vsv_wt, aes(x = calibrated_score, y = ave_enrichment), size = 1, alpha = 0.1) +
   geom_line(data = sequence_abundance_compiled_vsv_wt_loess, aes(x = calibrated_score, y = value)) +
   geom_point(data = sequence_abundance_compiled_vsv_i21n , aes(x = calibrated_score, y = ave_enrichment), size = 1, alpha = 0.1, color = "red") +
@@ -3167,184 +3011,82 @@ ggplot() + labs(title = "VSV-G") +
   NULL
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Performing%20LOESS%20off%20minilibrary%20data%20for%20VSV-G-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Performing%20LOESS%20off%20minilibrary%20data%20for%20VSV-G-1.png)<!-- -->
 
 ## Now bringing in the STIM1 experiment
 
 ``` r
 klib_raw = read.table("Data/STIM1_Kozak/klib.assembled.tsv", header = TRUE)
-k_r1_raw = read.table("Data/STIM1_Kozak/k_r1.assembled.tsv", header = TRUE)
-k_r2_raw = read.table("Data/STIM1_Kozak/k_r2.assembled.tsv", header = TRUE)
-k_r3_raw = read.table("Data/STIM1_Kozak/k_r3.assembled.tsv", header = TRUE)
+kr1_raw = read.table("Data/STIM1_Kozak/k_r1.assembled.tsv", header = TRUE)
+kr2_raw = read.table("Data/STIM1_Kozak/k_r2.assembled.tsv", header = TRUE)
+kr3_raw = read.table("Data/STIM1_Kozak/k_r3.assembled.tsv", header = TRUE)
 
 klib_temp = klib_raw %>% count(read_class)
-k_r1_temp = k_r1_raw %>% count(read_class)
-k_r2_temp = k_r2_raw %>% count(read_class)
-k_r3_temp = k_r3_raw %>% count(read_class)
+kr1_temp = kr1_raw %>% count(read_class)
+kr2_temp = kr2_raw %>% count(read_class)
+kr3_temp = kr3_raw %>% count(read_class)
 
 klib = klib_raw %>% filter(read_class == "Kozak") %>% count(kozak_sequence)
-k_r1 = k_r1_raw %>% filter(read_class == "Kozak") %>% count(kozak_sequence)
-k_r2 = k_r2_raw %>% filter(read_class == "Kozak") %>% count(kozak_sequence)
-k_r3 = k_r3_raw %>% filter(read_class == "Kozak") %>% count(kozak_sequence)
+kr1 = kr1_raw %>% filter(read_class == "Kozak") %>% count(kozak_sequence)
+kr2 = kr2_raw %>% filter(read_class == "Kozak") %>% count(kozak_sequence)
+kr3 = kr3_raw %>% filter(read_class == "Kozak") %>% count(kozak_sequence)
 
-klib_comb <- rbind(klib,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(klib_temp$n[2],klib_temp$n[3])))
-k_r1_comb <- rbind(k_r1,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(k_r1_temp$n[2],klib_temp$n[3])))
-k_r2_comb <- rbind(k_r2,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(k_r2_temp$n[2],klib_temp$n[3])))
-k_r3_comb <- rbind(k_r3,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(k_r3_temp$n[2],klib_temp$n[3])))
+klib_comb <- rbind(klib,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(klib_temp$n[2],klib_temp$n[3]))) %>% mutate(log10_count = log10(n))
+kr1_comb <- rbind(kr1,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(kr1_temp$n[2],klib_temp$n[3]))) %>% mutate(log10_count = log10(n))
+kr2_comb <- rbind(kr2,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(kr2_temp$n[2],klib_temp$n[3]))) %>% mutate(log10_count = log10(n))
+kr3_comb <- rbind(kr3,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(kr3_temp$n[2],klib_temp$n[3]))) %>% mutate(log10_count = log10(n))
+
+klib_density <- ggplot() + geom_density(data = klib_comb, aes(x = log10_count))
+klib_density_table <- ggplot_build(klib_density)$data[[1]]
+klib_minquant <- klib_density_table %>% filter(x < quantile(klib_density_table$x, minquant_fraction))
+klib_density_minima <- klib_minquant[klib_minquant$y == min(klib_minquant$y),"x"]
+klib_density <- ggplot() + geom_density(data = klib, aes(x = log10_count)) + geom_vline(xintercept = klib_density_minima)
+klib_filtered <- klib_comb %>% filter(log10_count > klib_density_minima)
+
+kr1_density <- ggplot() + geom_density(data = kr1_comb, aes(x = log10_count))
+kr1_density_table <- ggplot_build(kr1_density)$data[[1]]
+kr1_minquant <- kr1_density_table %>% filter(x < quantile(kr1_density_table$x, minquant_fraction))
+kr1_density_minima <- kr1_minquant[kr1_minquant$y == min(kr1_minquant$y),"x"]
+kr1_density <- ggplot() + geom_density(data = kr1, aes(x = log10_count)) + geom_vline(xintercept = kr1_density_minima)
+kr1_filtered <- kr1_comb %>% filter(log10_count > kr1_density_minima)
+
+kr2_density <- ggplot() + geom_density(data = kr2_comb, aes(x = log10_count))
+kr2_density_table <- ggplot_build(kr2_density)$data[[1]]
+kr2_minquant <- kr2_density_table %>% filter(x < quantile(kr2_density_table$x, minquant_fraction))
+kr2_density_minima <- kr2_minquant[kr2_minquant$y == min(kr2_minquant$y),"x"]
+kr2_density <- ggplot() + geom_density(data = kr2, aes(x = log10_count)) + geom_vline(xintercept = kr2_density_minima)
+kr2_filtered <- kr2_comb %>% filter(log10_count > kr2_density_minima)
+
+kr3_density <- ggplot() + geom_density(data = kr3_comb, aes(x = log10_count))
+kr3_density_table <- ggplot_build(kr3_density)$data[[1]]
+kr3_minquant <- kr3_density_table %>% filter(x < quantile(kr3_density_table$x, minquant_fraction))
+kr3_density_minima <- kr3_minquant[kr3_minquant$y == min(kr3_minquant$y),"x"]
+kr3_density <- ggplot() + geom_density(data = kr3, aes(x = log10_count)) + geom_vline(xintercept = kr3_density_minima)
+kr3_filtered <- kr3_comb %>% filter(log10_count > kr3_density_minima)
 ```
 
 ``` r
-klib_freq = klib_comb %>% mutate(n0 = n) %>% mutate(f0 = n/sum(n))
-kr1_freq = k_r1_comb %>% mutate(n1 = n) %>% mutate(f1 = n/sum(n)) 
-kr2_freq = k_r2_comb %>% mutate(n2 = n) %>% mutate(f2 = n/sum(n)) 
-kr3_freq = k_r3_comb %>% mutate(n3 = n) %>% mutate(f3 = n/sum(n)) 
+klib_freq = klib_filtered %>% mutate(n0 = n) %>% mutate(f0 = n/sum(n))
+kr1_freq = kr1_filtered %>% mutate(n1 = n) %>% mutate(f1 = n/sum(n)) 
+kr2_freq = kr2_filtered %>% mutate(n2 = n) %>% mutate(f2 = n/sum(n)) 
+kr3_freq = kr3_filtered %>% mutate(n3 = n) %>% mutate(f3 = n/sum(n)) 
 
-## Filter the data to make sure I'm getting rid of poorly sampled variants
-sampling_lod <- read.csv(file = "Data/Sampling_limit_of_detection.csv", header = T, stringsAsFactors = F)
+k_enrich <- merge(klib_freq[,c("kozak_sequence","n0","f0")], kr1_freq[,c("kozak_sequence","n1","f1")], by = "kozak_sequence", all = T)
+k_enrich <- merge(k_enrich, kr2_freq[,c("kozak_sequence","n2","f2")], by = "kozak_sequence", all = T)
+k_enrich <- merge(k_enrich, kr3_freq[,c("kozak_sequence","n3","f3")], by = "kozak_sequence", all = T)
 
-sampling_lod_filter_df <- data.frame("name" = c("f0","f1","f2","f3"), "total_reads" = c(sum(klib_freq$n0),sum(kr1_freq$n1),sum(kr2_freq$n2),sum(kr3_freq$n3)))
 
-## Based on these results, I want to filter away anything less than a count of 5
-klib_freq$f0b <- klib_freq$f0
-klib_freq[klib_freq$n0 < 5, "f0b"] <- NA
+k_enrich[is.na(k_enrich)] <- 0
+k_enrich2 <- k_enrich %>% mutate(fcells = (f1 + f2 + f3)/3) %>% mutate(sdcells = sqrt(((f1-fcells)^2 + (f2-fcells)^2 + (f3-fcells)^2)/2)) %>% mutate(cvcells = sdcells / fcells)
 
-kr1_freq$f1b <- kr1_freq$f1
-kr1_freq[kr1_freq$n1 < 5, "f1b"] <- NA
-
-kr2_freq$f2b <- kr2_freq$f2
-kr2_freq[kr2_freq$n2 < 5, "f2b"] <- NA
-
-kr3_freq$f3b <- kr3_freq$f3
-kr3_freq[kr3_freq$n3 < 5, "f3b"] <- NA
-
-k_enrich <- merge(klib_freq[,c("kozak_sequence","n0","f0b")], kr1_freq[,c("kozak_sequence","n1","f1b")], by = "kozak_sequence", all = T)
-k_enrich <- merge(k_enrich, kr2_freq[,c("kozak_sequence","n2","f2b")], by = "kozak_sequence", all = T)
-k_enrich <- merge(k_enrich, kr3_freq[,c("kozak_sequence","n3","f3b")], by = "kozak_sequence", all = T)
-```
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_enrich, aes(x = f0b, y = f1b))
-```
-
-![](ACE2_Kozak_files/figure-gfm/Compare%20frequencies%20across%20datasets-1.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_enrich, aes(x = f0b, y = f2b))
-```
-
-![](ACE2_Kozak_files/figure-gfm/Compare%20frequencies%20across%20datasets-2.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_enrich, aes(x = f0b, y = f3b))
-```
-
-![](ACE2_Kozak_files/figure-gfm/Compare%20frequencies%20across%20datasets-3.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_enrich, aes(x = f1b, y = f2b))
-```
-
-![](ACE2_Kozak_files/figure-gfm/Compare%20frequencies%20across%20datasets-4.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_enrich, aes(x = f2b, y = f3b))
-```
-
-![](ACE2_Kozak_files/figure-gfm/Compare%20frequencies%20across%20datasets-5.png)<!-- -->
-
-``` r
-k_enrich_melt <- melt(k_enrich[,c("kozak_sequence","f0b","f1b","f2b","f3b")])
-
-ggplot() + scale_x_log10() + 
-  geom_density(data = k_enrich_melt, aes(x = value, fill = variable), alpha = 0.5) +
-  geom_vline(xintercept = c(1e-5, 1e-4), linetype = 2)
-```
-
-![](ACE2_Kozak_files/figure-gfm/Compare%20frequencies%20across%20datasets-6.png)<!-- -->
-
-``` r
-## Based on the above histogram, it's likely worth filtering the plasmid seq at 3e-5 and cells at 1e-4
-```
-
-``` r
-klib_freq_filtered <- klib_freq %>% filter(f0b >= 1e-5) %>% mutate(n0 = n) %>% mutate(f0 = n/sum(n))
-kr1_freq_filtered <- kr1_freq %>% filter(f1b >= 1e-4) %>% mutate(n0 = n) %>% mutate(f1 = n/sum(n))
-kr2_freq_filtered <- kr2_freq %>% filter(f2b >= 1e-4) %>% mutate(n0 = n) %>% mutate(f2 = n/sum(n))
-kr3_freq_filtered <- kr3_freq %>% filter(f3b >= 1e-4) %>% mutate(n0 = n) %>% mutate(f3 = n/sum(n))
-
-k_filtered_enrich <- merge(klib_freq_filtered[,c("kozak_sequence","n0","f0")], kr1_freq_filtered[,c("kozak_sequence","n1","f1")], by = "kozak_sequence", all.y = T)
-k_filtered_enrich <- merge(k_filtered_enrich, kr2_freq_filtered[,c("kozak_sequence","n2","f2")], by = "kozak_sequence", all = T)
-k_filtered_enrich <- merge(k_filtered_enrich, kr3_freq_filtered[,c("kozak_sequence","n3","f3")], by = "kozak_sequence", all = T)
-```
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_filtered_enrich, aes(x = f0, y = f1))
-```
-
-![](ACE2_Kozak_files/figure-gfm/Compare%20frequencies%20across%20datasets%20after%20filtering-1.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_filtered_enrich, aes(x = f0, y = f2))
-```
-
-![](ACE2_Kozak_files/figure-gfm/Compare%20frequencies%20across%20datasets%20after%20filtering-2.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_filtered_enrich, aes(x = f0, y = f3))
-```
-
-![](ACE2_Kozak_files/figure-gfm/Compare%20frequencies%20across%20datasets%20after%20filtering-3.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_filtered_enrich, aes(x = f1, y = f2))
-```
-
-![](ACE2_Kozak_files/figure-gfm/Compare%20frequencies%20across%20datasets%20after%20filtering-4.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_filtered_enrich, aes(x = f2, y = f3))
-```
-
-![](ACE2_Kozak_files/figure-gfm/Compare%20frequencies%20across%20datasets%20after%20filtering-5.png)<!-- -->
-
-``` r
-### Now take an average frequency for all the cell data to compare before and after recombination
-
-k_filtered_enrich[is.na(k_filtered_enrich)] <- 0
-k_filtered_enrich2 <- k_filtered_enrich %>% mutate(fcells = (f1 + f2 + f3)/3) %>% mutate(sdcells = sqrt(((f1-fcells)^2 + (f2-fcells)^2 + (f3-fcells)^2)/2)) %>% mutate(cvcells = sdcells / fcells)
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_filtered_enrich2, aes(x = f0, y = fcells))
-```
-
-![](ACE2_Kozak_files/figure-gfm/Compare%20frequencies%20across%20datasets%20after%20filtering-6.png)<!-- -->
-
-``` r
-ggplot() + scale_x_log10() +  
-  geom_histogram(data = k_filtered_enrich2, aes(x = cvcells))
-```
-
-![](ACE2_Kozak_files/figure-gfm/Compare%20frequencies%20across%20datasets%20after%20filtering-7.png)<!-- -->
-
-``` r
 #separate based on variants
-k_filtered_enrich3 = k_filtered_enrich2 %>% mutate(code = substr(kozak_sequence, 1, 1))
-k_filtered_enrich3 = k_filtered_enrich3 %>% mutate(variant = case_when(code == "A" ~ "WT",
+k_enrich3 = k_enrich2 %>% mutate(code = substr(kozak_sequence, 1, 1))
+k_enrich3 = k_enrich3 %>% mutate(variant = case_when(code == "A" ~ "WT",
                                            code == "C" ~ "R429C",
                                            code == "G" ~ "R304W"))
 
-k_filtered_enrich3[k_filtered_enrich3$kozak_sequence == "_OTHER","variant"] <- "Other"
-k_filtered_enrich3[k_filtered_enrich3$kozak_sequence == "_TEMPL","variant"] <- "Template"
+k_enrich3[k_enrich3$kozak_sequence == "_OTHER","variant"] <- "Other"
+k_enrich3[k_enrich3$kozak_sequence == "_TEMPL","variant"] <- "Template"
 ```
 
 ``` r
@@ -3354,76 +3096,42 @@ r5t0 <- merge(i0710, i0711, by = "Sequence", all = T)
 r5t0$kozak <- substr(r5t0$Sequence,1,6)
 r5t0$coding <- substr(r5t0$Sequence,7,20)
 r5t0 <- r5t0 %>% filter(coding == "ATGGATGTATGCG")
-ggplot() + geom_point(data = r5t0, aes(x = Count.x, y = Count.y)) +
-  scale_x_log10() + scale_y_log10() 
-```
 
-![](ACE2_Kozak_files/figure-gfm/Bringing%20in%20additional%20replicate%20data-1.png)<!-- -->
-
-``` r
 i0712 <- read.csv(file = "Data/STIM1_Kozak/I0712.csv", header = T)
 i0713 <- read.csv(file = "Data/STIM1_Kozak/I0713.csv", header = T)
 r5t1 <- merge(i0712, i0713, by = "Sequence", all = T)
 r5t1$kozak <- substr(r5t1$Sequence,1,6)
 r5t1$coding <- substr(r5t1$Sequence,7,20)
 r5t1 <- r5t1 %>% filter(coding == "ATGGATGTATGCG")
-ggplot() + geom_point(data = r5t1, aes(x = Count.x, y = Count.y)) +
-  scale_x_log10() + scale_y_log10() 
-```
 
-![](ACE2_Kozak_files/figure-gfm/Bringing%20in%20additional%20replicate%20data-2.png)<!-- -->
-
-``` r
 i0714 <- read.csv(file = "Data/STIM1_Kozak/I0714.csv", header = T)
 i0715 <- read.csv(file = "Data/STIM1_Kozak/I0715.csv", header = T)
 r5t2 <- merge(i0714, i0715, by = "Sequence", all = T)
 r5t2$kozak <- substr(r5t2$Sequence,1,6)
 r5t2$coding <- substr(r5t2$Sequence,7,20)
 r5t2 <- r5t2 %>% filter(coding == "ATGGATGTATGCG")
-ggplot() + geom_point(data = r5t2, aes(x = Count.x, y = Count.y)) +
-  scale_x_log10() + scale_y_log10()
-```
 
-![](ACE2_Kozak_files/figure-gfm/Bringing%20in%20additional%20replicate%20data-3.png)<!-- -->
-
-``` r
 i0716 <- read.csv(file = "Data/STIM1_Kozak/I0716.csv", header = T)
 i0717 <- read.csv(file = "Data/STIM1_Kozak/I0717.csv", header = T)
 r6t0 <- merge(i0716, i0717, by = "Sequence", all = T)
 r6t0$kozak <- substr(r6t0$Sequence,1,6)
 r6t0$coding <- substr(r6t0$Sequence,7,20)
 r6t0 <- r6t0 %>% filter(coding == "ATGGATGTATGCG")
-ggplot() + geom_point(data = r6t0, aes(x = Count.x, y = Count.y)) +
-  scale_x_log10() + scale_y_log10()
-```
 
-![](ACE2_Kozak_files/figure-gfm/Bringing%20in%20additional%20replicate%20data-4.png)<!-- -->
-
-``` r
 i0718 <- read.csv(file = "Data/STIM1_Kozak/I0718.csv", header = T)
 i0719 <- read.csv(file = "Data/STIM1_Kozak/I0719.csv", header = T)
 r6t1 <- merge(i0718, i0719, by = "Sequence", all = T)
 r6t1$kozak <- substr(r6t1$Sequence,1,6)
 r6t1$coding <- substr(r6t1$Sequence,7,20)
 r6t1 <- r6t1 %>% filter(coding == "ATGGATGTATGCG")
-ggplot() + geom_point(data = r6t1, aes(x = Count.x, y = Count.y)) +
-  scale_x_log10() + scale_y_log10()
-```
 
-![](ACE2_Kozak_files/figure-gfm/Bringing%20in%20additional%20replicate%20data-5.png)<!-- -->
-
-``` r
 i0720 <- read.csv(file = "Data/STIM1_Kozak/I0720.csv", header = T)
 i0721 <- read.csv(file = "Data/STIM1_Kozak/I0721.csv", header = T)
 r6t2 <- merge(i0720, i0721, by = "Sequence", all = T)
 r6t2$kozak <- substr(r6t2$Sequence,1,6)
 r6t2$coding <- substr(r6t2$Sequence,7,20)
 r6t2 <- r6t2 %>% filter(coding == "ATGGATGTATGCG")
-ggplot() + geom_point(data = r6t2, aes(x = Count.x, y = Count.y)) +
-  scale_x_log10() + scale_y_log10()
 ```
-
-![](ACE2_Kozak_files/figure-gfm/Bringing%20in%20additional%20replicate%20data-6.png)<!-- -->
 
 ``` r
 #r5t0[is.na(r5t0)] <- 0.1
@@ -3444,33 +3152,9 @@ r5t2$freq2 <- r5t2$Count.y / sum(r5t2$Count.y, na.rm = T)
 r5t2$r5t2 <- rowMeans(r5t2[c("freq1", "freq2")])
 
 r5 <- merge(r5, r5t2[,c("kozak","r5t2")])
-
-ggplot() + geom_point(data = r5, aes(x = r5t0, y = r5t1)) +
-  scale_x_log10() + scale_y_log10()
-```
-
-![](ACE2_Kozak_files/figure-gfm/This%20replicate%20had%20different%20timepoints%20thus%20requiring%20a%20slightly%20different%20analysis-1.png)<!-- -->
-
-``` r
-ggplot() + geom_point(data = r5, aes(x = r5t1, y = r5t2)) +
-  scale_x_log10() + scale_y_log10()
-```
-
-![](ACE2_Kozak_files/figure-gfm/This%20replicate%20had%20different%20timepoints%20thus%20requiring%20a%20slightly%20different%20analysis-2.png)<!-- -->
-
-``` r
-ggplot() + geom_point(data = r5, aes(x = r5t0, y = r5t2)) +
-  scale_x_log10() + scale_y_log10()
-```
-
-![](ACE2_Kozak_files/figure-gfm/This%20replicate%20had%20different%20timepoints%20thus%20requiring%20a%20slightly%20different%20analysis-3.png)<!-- -->
-
-``` r
 r5$r5 <- (rowMeans(log10(r5[,c("r5t1","r5t2")]), na.rm = T) - log10(r5$r5t0))
 colnames(r5)[1] <- "kozak_sequence"
-```
 
-``` r
 #r6t0[is.na(r6t0)] <- 0.1
 r6t0$freq1 <- r6t0$Count.x / sum(r6t0$Count.x, na.rm = T)
 r6t0$freq2 <- r6t0$Count.y / sum(r6t0$Count.y, na.rm = T)
@@ -3489,43 +3173,21 @@ r6t2$freq2 <- r6t2$Count.y / sum(r6t2$Count.y, na.rm = T)
 r6t2$r6t2 <- rowMeans(r6t2[c("freq1", "freq2")])
 
 r6 <- merge(r6, r6t2[,c("kozak","r6t2")])
-
-ggplot() + geom_point(data = r6, aes(x = r6t0, y = r6t1)) +
-  scale_x_log10() + scale_y_log10()
-```
-
-![](ACE2_Kozak_files/figure-gfm/Now%20for%20STIM1%20replicate%206-1.png)<!-- -->
-
-``` r
-ggplot() + geom_point(data = r6, aes(x = r6t1, y = r6t2)) +
-  scale_x_log10() + scale_y_log10()
-```
-
-![](ACE2_Kozak_files/figure-gfm/Now%20for%20STIM1%20replicate%206-2.png)<!-- -->
-
-``` r
-ggplot() + geom_point(data = r6, aes(x = r6t0, y = r6t2)) +
-  scale_x_log10() + scale_y_log10()
-```
-
-![](ACE2_Kozak_files/figure-gfm/Now%20for%20STIM1%20replicate%206-3.png)<!-- -->
-
-``` r
 r6$r6 <- (rowMeans(log10(r6[,c("r6t1","r6t2")]), na.rm = T) - log10(r6$r6t0))
 colnames(r6)[1] <- "kozak_sequence"
 ```
 
 ``` r
-k_filtered_enrich3$enrichment <- log10(k_filtered_enrich3$fcells / k_filtered_enrich3$f0)
+k_enrich3$enrichment <- log10(k_enrich3$fcells / k_enrich3$f0)
 
-k_score0 = k_filtered_enrich3 %>% select("kozak_sequence","variant","f0", "fcells","enrichment") %>% filter(!(enrichment %in% c("0","Inf")))
+k_score0 = k_enrich3 %>% select("kozak_sequence","variant","f0", "fcells","enrichment") %>% filter(!(enrichment %in% c("0","Inf")))
 
 k_score <- merge(merge(k_score0, r5[,c("kozak_sequence","r5")], all = T), r6[,c("kozak_sequence","r6")], all = T)
 
 k_score$survival <- rowMeans(k_score[,c("enrichment","r5","r6")], na.rm = T)
 
 #abund_raw = read.csv("Kozak_values.csv")
-abund_raw = complete_frame5[,c("sequence","imputed_score","calibrated_score")]
+abund_raw = complete_frame5[,c("sequence","calibrated_score")]
 abund_raw = abund_raw %>% mutate(kozak_sequence = substr(sequence, 1, 6))
 abund_stim = abund_raw %>% mutate(code = substr(kozak_sequence, 1,1)) %>% filter(code != "T")
 k_score = left_join(k_score, abund_stim)
@@ -3541,11 +3203,11 @@ STIM1_Kozak_histogram <- ggplot() +
   scale_y_continuous(breaks = c(0,20,40)) + 
   geom_vline(xintercept = 10^k_score$survival[2], linetype = 2) +
   geom_histogram(data = k_score_samples, aes(x= 10^survival), bins = 10, color = "black", fill = "grey75") + 
-  facet_grid(rows = vars(variant))
-STIM1_Kozak_histogram
+  facet_grid(rows = vars(variant)) +
+  NULL; STIM1_Kozak_histogram
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Calculate%20enrichment-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Calculate%20enrichment%20for%20STIM1%20Kozak%20data-1.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/STIM1_Kozak_histogram.pdf", STIM1_Kozak_histogram, height = 1.5, width = 1.9)
@@ -3558,13 +3220,11 @@ STIM1_geom_smooth_plot <- ggplot() + theme(panel.grid.minor = element_blank(), p
   scale_x_log10(expand = c(0,0), limits = c(0.007,1.34)) + scale_y_log10(expand = c(0,0)) + 
   labs(x = "Calibrated abundance score", y = "Enrichment score") +
   geom_hline(yintercept = 10^k_score$survival[2], alpha = 0.4) +
-  #geom_point(data = k_score_samples, aes(x= calibrated_score, y= 10^survival, color = variant), alpha = 0.4) +
-  geom_smooth(data = k_score_samples, aes(x= calibrated_score, y= 10^survival, color = variant), alpha = 0.1, span = 3) +
-  #facet_grid(cols = vars(variant)) +
+  geom_smooth(data = k_score_samples, aes(x= calibrated_score, y= 10^survival, color = variant), alpha = 0.1, span = 1.5) +
   NULL; STIM1_geom_smooth_plot
 ```
 
-![](ACE2_Kozak_files/figure-gfm/Plotting%20the%20variant-specific%20STIM1%20functional%20outputs%20dependent%20on%20expression%20level-1.png)<!-- -->
+![](Kozak_files/figure-gfm/Plotting%20the%20variant-specific%20STIM1%20functional%20outputs%20dependent%20on%20expression%20level-1.png)<!-- -->
 
 ``` r
 ggsave(file = "Plots/STIM1_geom_smooth_plot.pdf", STIM1_geom_smooth_plot, height = 1.5, width = 2.9)

@@ -485,6 +485,9 @@ sort2 <- fourWaySortAnalysis(c(80,81,82,83,84,85,86,87)) %>% arrange(desc(w_ave)
 sort3 <- fourWaySortAnalysis(c(104,104,105,105,106,106,107,107)) %>% arrange(desc(w_ave))
 sort4 <- fourWaySortAnalysis(c(89,89,90,90,91,91,92,92)) %>% arrange(desc(w_ave))
 
+#myfiles[c(72,73,74,75,76,77,78,79)]
+#myfiles[c(80,81,82,83,84,85,86,87)]
+#myfiles[c(104,104,105,105,106,106,107,107)]
 #myfiles[c(89,89,90,90,91,91,92,92)]
 ```
 
@@ -777,6 +780,15 @@ density_4way_sort_calcd_plot
 
 ```
 
+
+
+```{r There will be later functional data that will indicate clear outliers that should be removed from the dataset}
+
+complete_frame3 <- complete_frame3 %>% filter(!(sequence %in% c("GAGTTAATG","AAACTGATG","AGTAGAATG","CCCATGATG")))
+
+```
+
+
 ```{r Import the Noderer data and see which clones exhibit different scores}
 ## Next, import the data from Noderer et al
 noderer_data <- read.delim(file = "Data/Noderer.tsv", stringsAsFactors = F)
@@ -814,6 +826,60 @@ ggsave(file = "plots/Noderer_vs_calibrated_score_scatterplot.pdf", Noderer_vs_ca
 paste("Correlation coefficients between Noderer data and our sequencing data -->","Pearson's r^2:",
 round(cor(log10(complete_frame4$calibrated_score), complete_frame4$noderer, method = "pearson", use = "complete")^2,2),"Spearman's rho^2:",
 round(cor(log10(complete_frame4$calibrated_score), complete_frame4$noderer, method = "spearman", use = "complete")^2,2))
+
+```
+
+## Seeing if we can model what is going on
+```{r PSSM for calibrated_score}
+## Trying a position weight matrix for the calibrated score
+
+pwm_dataframe <- data.frame("n6" = rep(0,4),"n5" = rep(0,4),"n4" = rep(0,4),"n3" = rep(0,4),"n2" = rep(0,4),"n1" = rep(0,4))
+rownames(pwm_dataframe) <- c("A","C","G","T")
+
+for(x in 1:nrow(complete_frame4)){
+  temp_seq <- substr(complete_frame4$sequence[x],1,6)
+  temp_score <- as.numeric(complete_frame4$calibrated_score[x])
+  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,1,1),"n6"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,1,1),"n6"] + temp_score
+  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,2,2),"n5"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,2,2),"n5"] + temp_score
+  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,3,3),"n4"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,3,3),"n4"] + temp_score
+  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,4,4),"n3"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,4,4),"n3"] + temp_score
+  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,5,5),"n2"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,5,5),"n2"] + temp_score
+  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,6,6),"n1"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,6,6),"n1"] + temp_score
+}
+pwm_dataframe2 <- pwm_dataframe / colSums(pwm_dataframe)
+pwm_matrix <- as.matrix(pwm_dataframe2)
+
+## Function for working out the position weight matrix value
+pwm <- function(freq, total, bg=0.25){
+  #using the formulae above
+  p <- (freq + (sqrt(total) * 1/4)) / (total + (4 * (sqrt(total) * 1/4)))
+  log2(p/bg)
+}
+pwm_matrix2 <- pwm(pwm_matrix,6)
+
+## Logo plot 
+proportion <- function(x){
+   rs <- sum(x);
+   return(x / rs);
+}
+
+## Bar chart
+pwm_matrix_melt <- melt(pwm_matrix)
+
+PWM_barplot <- ggplot() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
+  labs(x = "Position along Kozak", y = "Weighted\nfrequency") + 
+  geom_bar(data = pwm_matrix_melt, aes(x = Var2, y = value, fill = Var1), stat = "identity", color = "black")
+PWM_barplot
+ggsave(file = "plots/PWM_barplot.pdf", PWM_barplot, height = 1.2, width = 3)
+
+PWM_pointplot <- ggplot() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top") + 
+  labs(x = "Position along Kozak", y = "Weighted\nfrequency") + 
+  geom_hline(yintercept = 0.25, linetype = 2, alpha = 0.4) + 
+  geom_point(data = pwm_matrix_melt, aes(x = Var2, y = value, color = Var1, fill = Var1), stat = "identity", shape = 21, size = 2, alpha = 0.5) +
+  NULL; PWM_pointplot
+ggsave(file = "plots/PWM_pointplot.pdf", PWM_pointplot, height = 2, width = 3.4)
 
 ```
 
@@ -984,33 +1050,6 @@ Pairwise_fold_diff <- ggplot() +
   NULL
 Pairwise_fold_diff
 ggsave(file = "plots/Pairwise_fold_diff.pdf", Pairwise_fold_diff, height = 2.2, width = 3.4)
-```
-
-## I want to bring a pssm model back in since this is what they did
-## Seeing if we can model what is going on 
-
-```{r Implementing the PWM}
-complete_frame4$pwm_score <- NA
-
-for(y in 1:nrow(complete_frame4)){
-  seq <- substr(complete_frame4$sequence[y],1,6) #'AAAAAA'
-  x <- unlist(strsplit(x=seq,split=''))
-  #initialize vector
-  seq_score <- vector()
-  #get the corresponding values
-  for(i in 1:6){
-    seq_score[i] <- pwm_matrix[x[i],i]
-  }
-  complete_frame4$pwm_score[y] <- prod(seq_score)
-}
-
-complete_frame4$pwm_score2 <- complete_frame4$pwm_score / complete_frame4[complete_frame4$sequence == "GCCACCATG","pwm_score"]
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = complete_frame4, aes(x = calibrated_score, y = pwm_score2), alpha = 0.2)
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = complete_frame4, aes(x = noderer, y = pwm_score2), alpha = 0.2)
 ```
 
 ## See if we can model the protein abundance amount using a random forest model
@@ -1187,7 +1226,6 @@ round(cor(log10(complete_frame4$rf_predict_mfi), complete_frame4$noderer, method
 paste("The total number of variants taht we scored was", nrow(complete_frame4))
 
 ```
-
 
 ## OK, this is where we are leaving all of the Kozak scoring. Now onto some applications.
 
@@ -1607,7 +1645,7 @@ vsv_enrichment_summary2 <- merge(vsv_enrichment_summary, vsv_enrichment[,c("sequ
 complete_frame5 <- merge(complete_frame4, s1_enrichment_summary2[,c("sequence","geomean")], by = "sequence", all = T)
 complete_frame5 <- merge(complete_frame5, s2_enrichment_summary2[,c("sequence","geomean")], by = "sequence", all.x = T)
 complete_frame5 <- merge(complete_frame5, vsv_enrichment_summary2[,c("sequence","geomean")], by = "sequence", all.x = T)
-colnames(complete_frame5) <- c("sequence","sort_geomean_log10","sort_geomean","sort_upper_conf","sort_lower_conf","mfi_lm_norm","calibrated_score","mfi_individual","noderer","rf_predict_mfi","imputed_score","residuals","generalized_imputed_score","s1","s2","vsv")
+colnames(complete_frame5) <- c("sequence","sort_geomean_log10","sort_geomean","sort_upper_conf","sort_lower_conf","mfi_lm_norm","calibrated_score","mfi_individual","noderer","rf_predict_mfi","residuals","s1","s2","vsv")
 
 ```
 
@@ -1693,7 +1731,7 @@ ggsave(file = "plots/Scaled_individual_multiplex_vsv_plot.pdf", Scaled_individua
 ```
 
 ```{r Output the infection data}
-write.csv(file = "Output_datatables/Kozak_infection.csv", complete_frame6[,c("sequence","imputed_score","calibrated_score","s2","s1","vsv","individual_s2","individual_s1","individual_vsv")], row.names = F, quote = F)
+write.csv(file = "Output_datatables/Kozak_infection.csv", complete_frame6[,c("sequence","calibrated_score","s2","s1","vsv","individual_s2","individual_s1","individual_vsv")], row.names = F, quote = F)
 
 ```
 
@@ -1772,7 +1810,7 @@ calibrated_s2_loess_plot <- ggplot() + theme(panel.grid = element_blank()) +
 ggsave(file = "plots/calibrated_s2_loess_plot.pdf", calibrated_s2_loess_plot, height = 1.5, width = 2)
 
 ggplot() + 
-  scale_x_log10() + scale_y_log10() + 
+  scale_x_log10() + #scale_y_log10() + 
   geom_line(data = complete_frame5_vsvloess, aes(x = calibrated_score, y = value)) +
   geom_line(data = complete_frame5_s1loess, aes(x = calibrated_score, y = value), color = "red") +
   geom_line(data = complete_frame5_s2loess, aes(x = calibrated_score, y = value), color = "green") +
@@ -1780,7 +1818,7 @@ ggplot() +
 
 calibrated_combined_loess_plot <- ggplot() + theme(panel.grid = element_blank()) + 
   scale_x_log10(limits = c(0.01,2), expand = c(0,0)) + scale_y_log10(limits = c(0.008,10)) + 
-  labs(x = "calibrated abundance", y = "Enrichment in infected cells", title = "SARS-CoV-2") +
+  labs(x = "calibrated abundance", y = "Enrichment in infected cells", title = "") +
   #geom_abline(intercept = 0, slope = 1, linetype = 2, alpha = 0.4, color = "black") +
   geom_line(data = complete_frame5_vsvloess, aes(x = calibrated_score, y = 10^value), size = 2, alpha = 0.4) +
   geom_line(data = complete_frame5_s1loess, aes(x = calibrated_score, y = 10^value), color = "red", size = 2, alpha = 0.4) +
@@ -1798,11 +1836,6 @@ for(x in 2:nrow(complete_frame5_vsvloess)){
   complete_frame5_s2loess$derivative[x] <- ((log10(complete_frame5_s2loess$value[x]) - log10(complete_frame5_s2loess$value[x-1])) / (log10(complete_frame5_s2loess$calibrated_score[x]) - log10(complete_frame5_s2loess$calibrated_score[x-1])))
 }
 
-ggplot() + scale_x_log10() + scale_y_continuous(limits = c(-1,3)) +
-  geom_smooth(data = complete_frame5_vsvloess, aes(x = calibrated_score, y = derivative)) +
-  geom_smooth(data = complete_frame5_s1loess, aes(x = calibrated_score, y = derivative), color = "red") +
-  geom_smooth(data = complete_frame5_s2loess, aes(x = calibrated_score, y = derivative), color = "green") +
-  NULL
 ```
 
 ## Can we use position1 as a possible identifier position?
@@ -1917,25 +1950,16 @@ mini_lib_plasmid <- read.delim(file = "Data/Amplicon_EZ/ACE2-Kozak-mini-library-
 mini_lib_plasmid_counted <- count(mini_lib_plasmid, kozak_sequence)
 
 ## First compare all of the unselecteds for the first experiment
-sa1_neg_1 <- read.delim(file = myfiles[152], sep = "\t")
-sa1_neg_2 <- read.delim(file = myfiles[153], sep = "\t")
-sa1_neg_3 <- read.delim(file = myfiles[154], sep = "\t")
+sa1_neg_1 <- read.delim(file = myfiles[153], sep = "\t")
+sa1_neg_2 <- read.delim(file = myfiles[154], sep = "\t")
 
 sa1_negs <- merge(sa1_neg_1, sa1_neg_2, by = "X", all.x = T)
-sa1_negs <- merge(sa1_negs, sa1_neg_3, by = "X", all.x = T)
-colnames(sa1_negs) <- c("kozak","neg1","neg2","neg3")
+colnames(sa1_negs) <- c("kozak","neg1","neg2")
 sa1_negs$n1 <- substr(sa1_negs$kozak,1,1)
 sa1_negs <- merge(sa1_negs, kozak_and_variant_key, by = "n1", all.x = T)
 
-ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "I0152", y = "I0153") +
-  geom_point(data = sa1_negs, aes(x = neg1, y = neg2, color = variant), alpha = 0.2)
-
-ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "I0152", y = "I0154") +
-  geom_point(data = sa1_negs, aes(x = neg1, y = neg3, color = variant), alpha = 0.2)
-
 ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "I0153", y = "I0154") +
-  geom_point(data = sa1_negs, aes(x = neg2, y = neg3, color = variant), alpha = 0.2)
-## I guess Ihave to figure out why the no infection looks slightly differen than the infected and not selected
+  geom_point(data = sa1_negs, aes(x = neg1, y = neg2, color = variant), alpha = 0.2)
 
 ## First compare all of the unselecteds for the second experiment
 sa2_neg_1 <- read.delim(file = myfiles[168], sep = "\t")
@@ -1958,7 +1982,7 @@ ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "I0169", y = "I0170") +
   geom_point(data = sa2_negs, aes(x = neg2, y = neg3, color = variant), alpha = 0.2)
 
 ## Write tables that can b4 used as neg controls
-sa1_neg <- rbind(sa1_neg_1, sa1_neg_2, sa1_neg_3) %>% group_by(X) %>% summarize(count = sum(count))
+sa1_neg <- rbind(sa1_neg_1, sa1_neg_2) %>% group_by(X) %>% summarize(count = sum(count))
 colnames(sa1_neg) <- c("","count")
 write.table(file = "Data/NextSeq003/sa1_unselected.tsv", sa1_neg, row.names = F, quote = F, sep = "\t")
 
@@ -1994,6 +2018,7 @@ ggplot() + scale_x_log10() + scale_y_log10() +
 ggplot() + scale_x_log10() + scale_y_log10() + 
   geom_point(data = sa1_vsv_counts, aes(x = high, y = low2), alpha = 0.2)
 
+myfiles[c(192,193,155,156,167)]
 sa1_vsv_r1 <- makeExperimentFrame2(c(192,193,155,155)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(total_reads))
 sa1_vsv_r2 <- makeExperimentFrame2(c(192,193,156,156)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(total_reads))
 sa1_vsv_r3 <- makeExperimentFrame2(c(192,193,167,167)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(total_reads))
@@ -2015,19 +2040,13 @@ ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "Calibrated abundance le
   facet_grid(cols = vars(variant))
 
 ## Rep 2
-sa2_vsv_low <- read.delim(file = myfiles[171], sep = "\t")
-sa2_vsv_high <- read.delim(file = myfiles[172], sep = "\t")
-sa2_vsv_low2 <- read.delim(file = myfiles[183], sep = "\t")
-sa2_vsv_counts <- merge(sa2_vsv_low, sa2_vsv_high, by = "X", all = T)
-sa2_vsv_counts <- merge(sa2_vsv_counts, sa2_vsv_low2, by = "X", all = T)
-colnames(sa2_vsv_counts) <- c("kozak","low","high","low2")
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa2_vsv_counts, aes(x = low, y = high), alpha = 0.2)
+sa1_vsv_r4 <- read.delim(file = myfiles[171], sep = "\t")
+sa1_vsv_r5 <- read.delim(file = myfiles[172], sep = "\t")
+sa1_vsv_r6 <- read.delim(file = myfiles[183], sep = "\t")
+sa2_vsv_counts <- merge(sa1_vsv_r4, sa1_vsv_r5, by = "X", all = T)
+sa2_vsv_counts <- merge(sa2_vsv_counts, sa1_vsv_r6, by = "X", all = T)
+colnames(sa2_vsv_counts) <- c("kozak","r4","r5","r6")
 ## I0171 is missing data for some reason
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa2_vsv_counts, aes(x = high, y = low2), alpha = 0.2)
 
 sa2_vsv <- makeExperimentFrame2(c(192,193,172,183)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
 sa2_vsv <- merge(sa2_vsv, complete_frame6[,c("sequence","calibrated_score")])
@@ -2055,22 +2074,20 @@ ggplot() + scale_x_log10() + scale_y_log10(limits = c(0.003,10)) + labs(x = "Cal
 
 ```
 
+```{r Pairwise tests for SARS1 samples}
+
+## Custom test pair
+test_pair1 <- read.delim(file = myfiles[181], sep = "\t")
+test_pair2 <- read.delim(file = myfiles[182], sep = "\t")
+test_pair <- merge(test_pair1, test_pair2, by = "X", all = T)
+
+ggplot() + scale_x_log10() + scale_y_log10() + 
+  geom_point(data = test_pair, aes(x = count.x, y = count.y), alpha = 0.2)
+
+```
+
+
 ```{r SARS1 kozak and sequence rep1}
-sa1_s1_low <- read.delim(file = myfiles[157], sep = "\t")
-sa1_s1_high <- read.delim(file = myfiles[158], sep = "\t")
-sa1_s1_low2 <- read.delim(file = myfiles[165], sep = "\t")
-sa1_s1_counts <- merge(sa1_s1_low, sa1_s1_high, by = "X", all = T)
-sa1_s1_counts <- merge(sa1_s1_counts, sa1_s1_low2, by = "X", all = T)
-colnames(sa1_s1_counts) <- c("kozak","low","high","low2")
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa1_s1_counts, aes(x = low, y = high), alpha = 0.2)
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa1_s1_counts, aes(x = low, y = low2), alpha = 0.2)
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa1_s1_counts, aes(x = high, y = low2), alpha = 0.2)
 
 sa1_s1_r1 <- makeExperimentFrame2(c(153,154,157,157)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
 sa1_s1_r2 <- makeExperimentFrame2(c(153,154,158,158)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
@@ -2092,7 +2109,6 @@ ggplot() + scale_x_log10() + scale_y_log10() + labs(x = "Calibrated abundance le
   geom_point(data = sa1_s1, aes(x = calibrated_score, y = h_enrichment, color = variant), alpha = 0.2) +
   facet_grid(cols = vars(variant))
 
-
 ## Rep 2
 sa2_s1_low <- read.delim(file = myfiles[173], sep = "\t")
 sa2_s1_high <- read.delim(file = myfiles[174], sep = "\t")
@@ -2101,15 +2117,7 @@ sa2_s1_counts <- merge(sa2_s1_low, sa2_s1_high, by = "X", all = T)
 sa2_s1_counts <- merge(sa2_s1_counts, sa2_s1_low2, by = "X", all = T)
 colnames(sa2_s1_counts) <- c("kozak","low","high","low2")
 
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa2_s1_counts, aes(x = low, y = high), alpha = 0.2)
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa2_s1_counts, aes(x = low, y = low2), alpha = 0.2)
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = sa2_s1_counts, aes(x = high, y = low2), alpha = 0.2)
-
+myfiles[c(169,170,173,174,182)]
 sa2_s1_r1 <- makeExperimentFrame2(c(169,170,173,173)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
 sa2_s1_r2 <- makeExperimentFrame2(c(169,170,174,174)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
 sa2_s1_r3 <- makeExperimentFrame2(c(169,170,181,181)) %>% filter(h_enrichment != "Inf") %>% arrange(desc(h_enrichment))
@@ -2253,12 +2261,11 @@ Sequence_and_abundance_scatterplots <- ggplot() + theme(panel.grid = element_bla
   NULL; Sequence_and_abundance_scatterplots
 ggsave(file = "Plots/Sequence_and_abundance_scatterplots.pdf", Sequence_and_abundance_scatterplots, height = 2.3, width = 4.5)
 
-
 Sequence_and_abundance_lineplots <- ggplot() + theme(panel.grid = element_blank(), legend.position = "bottom") + 
   scale_x_log10() + scale_y_log10(limits = c(0.1,3)) + labs(x = "calibrated abundance", y = "Enrichment upon infection") +
   #geom_hline(data = template_seqabund_dataframe, (aes(yintercept = template)), color = "purple", alpha = 0.5, size = 1) +
-  #stat_smooth(data= sequence_abundance_compiled, aes(x = calibrated_score, y = ave_enrichment, color = variant), geom='line', alpha=1, se=FALSE) +
-  geom_smooth(data= sequence_abundance_compiled, aes(x = calibrated_score, y = ave_enrichment, color = variant), alpha=0.1, size = 0.5) +
+  geom_point(data = sequence_abundance_compiled, aes(x = calibrated_score, y = ave_enrichment), alpha = 0, size = 1) +
+  stat_smooth(data= sequence_abundance_compiled, aes(x = calibrated_score, y = ave_enrichment, color = variant), geom='line', alpha=0.6, se=FALSE, size = 0.75) +
   facet_grid(cols = vars(virus)) +
   NULL; Sequence_and_abundance_lineplots
 ggsave(file = "Plots/Sequence_and_abundance_lineplots.pdf", Sequence_and_abundance_lineplots, height = 2, width = 4.25)
@@ -2335,7 +2342,7 @@ vsv_d355n_loess <- loess(ave_enrichment~calibrated_score, data=sequence_abundanc
 sequence_abundance_compiled_vsv_d355n_loess <- cbind(newvals, value=predict(vsv_d355n_loess, newvals))
 
 ggplot() + labs(title = "VSV-G") +
-  scale_x_log10(limits = c(0.02,1)) + scale_y_log10(limits = c(0.1,1.5)) + 
+  scale_x_log10(limits = c(0.02,1.5)) + scale_y_log10(limits = c(0.1,1.5)) + 
   geom_point(data = sequence_abundance_compiled_vsv_wt, aes(x = calibrated_score, y = ave_enrichment), size = 1, alpha = 0.1) +
   geom_line(data = sequence_abundance_compiled_vsv_wt_loess, aes(x = calibrated_score, y = value)) +
   geom_point(data = sequence_abundance_compiled_vsv_i21n , aes(x = calibrated_score, y = ave_enrichment), size = 1, alpha = 0.1, color = "red") +
@@ -2345,148 +2352,92 @@ ggplot() + labs(title = "VSV-G") +
   NULL
 ```
 
+
 ## Now bringing in the STIM1 experiment
 ```{r Import the STIM1 data}
 klib_raw = read.table("Data/STIM1_Kozak/klib.assembled.tsv", header = TRUE)
-k_r1_raw = read.table("Data/STIM1_Kozak/k_r1.assembled.tsv", header = TRUE)
-k_r2_raw = read.table("Data/STIM1_Kozak/k_r2.assembled.tsv", header = TRUE)
-k_r3_raw = read.table("Data/STIM1_Kozak/k_r3.assembled.tsv", header = TRUE)
+kr1_raw = read.table("Data/STIM1_Kozak/k_r1.assembled.tsv", header = TRUE)
+kr2_raw = read.table("Data/STIM1_Kozak/k_r2.assembled.tsv", header = TRUE)
+kr3_raw = read.table("Data/STIM1_Kozak/k_r3.assembled.tsv", header = TRUE)
 
 klib_temp = klib_raw %>% count(read_class)
-k_r1_temp = k_r1_raw %>% count(read_class)
-k_r2_temp = k_r2_raw %>% count(read_class)
-k_r3_temp = k_r3_raw %>% count(read_class)
+kr1_temp = kr1_raw %>% count(read_class)
+kr2_temp = kr2_raw %>% count(read_class)
+kr3_temp = kr3_raw %>% count(read_class)
 
 klib = klib_raw %>% filter(read_class == "Kozak") %>% count(kozak_sequence)
-k_r1 = k_r1_raw %>% filter(read_class == "Kozak") %>% count(kozak_sequence)
-k_r2 = k_r2_raw %>% filter(read_class == "Kozak") %>% count(kozak_sequence)
-k_r3 = k_r3_raw %>% filter(read_class == "Kozak") %>% count(kozak_sequence)
+kr1 = kr1_raw %>% filter(read_class == "Kozak") %>% count(kozak_sequence)
+kr2 = kr2_raw %>% filter(read_class == "Kozak") %>% count(kozak_sequence)
+kr3 = kr3_raw %>% filter(read_class == "Kozak") %>% count(kozak_sequence)
 
-klib_comb <- rbind(klib,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(klib_temp$n[2],klib_temp$n[3])))
-k_r1_comb <- rbind(k_r1,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(k_r1_temp$n[2],klib_temp$n[3])))
-k_r2_comb <- rbind(k_r2,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(k_r2_temp$n[2],klib_temp$n[3])))
-k_r3_comb <- rbind(k_r3,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(k_r3_temp$n[2],klib_temp$n[3])))
+klib_comb <- rbind(klib,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(klib_temp$n[2],klib_temp$n[3]))) %>% mutate(log10_count = log10(n))
+kr1_comb <- rbind(kr1,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(kr1_temp$n[2],klib_temp$n[3]))) %>% mutate(log10_count = log10(n))
+kr2_comb <- rbind(kr2,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(kr2_temp$n[2],klib_temp$n[3]))) %>% mutate(log10_count = log10(n))
+kr3_comb <- rbind(kr3,data.frame("kozak_sequence" = c("_OTHER","_TEMPL"), "n" = c(kr3_temp$n[2],klib_temp$n[3]))) %>% mutate(log10_count = log10(n))
 
-```
+klib_density <- ggplot() + geom_density(data = klib_comb, aes(x = log10_count))
+klib_density_table <- ggplot_build(klib_density)$data[[1]]
+klib_minquant <- klib_density_table %>% filter(x < quantile(klib_density_table$x, minquant_fraction))
+klib_density_minima <- klib_minquant[klib_minquant$y == min(klib_minquant$y),"x"]
+klib_density <- ggplot() + geom_density(data = klib, aes(x = log10_count)) + geom_vline(xintercept = klib_density_minima)
+klib_filtered <- klib_comb %>% filter(log10_count > klib_density_minima)
 
-```{r Calculate frequencies and enrichment scores}
-klib_freq = klib_comb %>% mutate(n0 = n) %>% mutate(f0 = n/sum(n))
-kr1_freq = k_r1_comb %>% mutate(n1 = n) %>% mutate(f1 = n/sum(n)) 
-kr2_freq = k_r2_comb %>% mutate(n2 = n) %>% mutate(f2 = n/sum(n)) 
-kr3_freq = k_r3_comb %>% mutate(n3 = n) %>% mutate(f3 = n/sum(n)) 
+kr1_density <- ggplot() + geom_density(data = kr1_comb, aes(x = log10_count))
+kr1_density_table <- ggplot_build(kr1_density)$data[[1]]
+kr1_minquant <- kr1_density_table %>% filter(x < quantile(kr1_density_table$x, minquant_fraction))
+kr1_density_minima <- kr1_minquant[kr1_minquant$y == min(kr1_minquant$y),"x"]
+kr1_density <- ggplot() + geom_density(data = kr1, aes(x = log10_count)) + geom_vline(xintercept = kr1_density_minima)
+kr1_filtered <- kr1_comb %>% filter(log10_count > kr1_density_minima)
 
-## Filter the data to make sure I'm getting rid of poorly sampled variants
-sampling_lod <- read.csv(file = "Data/Sampling_limit_of_detection.csv", header = T, stringsAsFactors = F)
+kr2_density <- ggplot() + geom_density(data = kr2_comb, aes(x = log10_count))
+kr2_density_table <- ggplot_build(kr2_density)$data[[1]]
+kr2_minquant <- kr2_density_table %>% filter(x < quantile(kr2_density_table$x, minquant_fraction))
+kr2_density_minima <- kr2_minquant[kr2_minquant$y == min(kr2_minquant$y),"x"]
+kr2_density <- ggplot() + geom_density(data = kr2, aes(x = log10_count)) + geom_vline(xintercept = kr2_density_minima)
+kr2_filtered <- kr2_comb %>% filter(log10_count > kr2_density_minima)
 
-sampling_lod_filter_df <- data.frame("name" = c("f0","f1","f2","f3"), "total_reads" = c(sum(klib_freq$n0),sum(kr1_freq$n1),sum(kr2_freq$n2),sum(kr3_freq$n3)))
-
-## Based on these results, I want to filter away anything less than a count of 5
-klib_freq$f0b <- klib_freq$f0
-klib_freq[klib_freq$n0 < 5, "f0b"] <- NA
-
-kr1_freq$f1b <- kr1_freq$f1
-kr1_freq[kr1_freq$n1 < 5, "f1b"] <- NA
-
-kr2_freq$f2b <- kr2_freq$f2
-kr2_freq[kr2_freq$n2 < 5, "f2b"] <- NA
-
-kr3_freq$f3b <- kr3_freq$f3
-kr3_freq[kr3_freq$n3 < 5, "f3b"] <- NA
-
-k_enrich <- merge(klib_freq[,c("kozak_sequence","n0","f0b")], kr1_freq[,c("kozak_sequence","n1","f1b")], by = "kozak_sequence", all = T)
-k_enrich <- merge(k_enrich, kr2_freq[,c("kozak_sequence","n2","f2b")], by = "kozak_sequence", all = T)
-k_enrich <- merge(k_enrich, kr3_freq[,c("kozak_sequence","n3","f3b")], by = "kozak_sequence", all = T)
+kr3_density <- ggplot() + geom_density(data = kr3_comb, aes(x = log10_count))
+kr3_density_table <- ggplot_build(kr3_density)$data[[1]]
+kr3_minquant <- kr3_density_table %>% filter(x < quantile(kr3_density_table$x, minquant_fraction))
+kr3_density_minima <- kr3_minquant[kr3_minquant$y == min(kr3_minquant$y),"x"]
+kr3_density <- ggplot() + geom_density(data = kr3, aes(x = log10_count)) + geom_vline(xintercept = kr3_density_minima)
+kr3_filtered <- kr3_comb %>% filter(log10_count > kr3_density_minima)
 
 ```
 
-```{r Compare frequencies across datasets}
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_enrich, aes(x = f0b, y = f1b))
+```{r Calculate STIM1 frequencies and enrichment scores for the first three replicates}
+klib_freq = klib_filtered %>% mutate(n0 = n) %>% mutate(f0 = n/sum(n))
+kr1_freq = kr1_filtered %>% mutate(n1 = n) %>% mutate(f1 = n/sum(n)) 
+kr2_freq = kr2_filtered %>% mutate(n2 = n) %>% mutate(f2 = n/sum(n)) 
+kr3_freq = kr3_filtered %>% mutate(n3 = n) %>% mutate(f3 = n/sum(n)) 
 
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_enrich, aes(x = f0b, y = f2b))
+k_enrich <- merge(klib_freq[,c("kozak_sequence","n0","f0")], kr1_freq[,c("kozak_sequence","n1","f1")], by = "kozak_sequence", all = T)
+k_enrich <- merge(k_enrich, kr2_freq[,c("kozak_sequence","n2","f2")], by = "kozak_sequence", all = T)
+k_enrich <- merge(k_enrich, kr3_freq[,c("kozak_sequence","n3","f3")], by = "kozak_sequence", all = T)
 
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_enrich, aes(x = f0b, y = f3b))
 
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_enrich, aes(x = f1b, y = f2b))
+k_enrich[is.na(k_enrich)] <- 0
+k_enrich2 <- k_enrich %>% mutate(fcells = (f1 + f2 + f3)/3) %>% mutate(sdcells = sqrt(((f1-fcells)^2 + (f2-fcells)^2 + (f3-fcells)^2)/2)) %>% mutate(cvcells = sdcells / fcells)
 
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_enrich, aes(x = f2b, y = f3b))
-  
-k_enrich_melt <- melt(k_enrich[,c("kozak_sequence","f0b","f1b","f2b","f3b")])
-
-ggplot() + scale_x_log10() + 
-  geom_density(data = k_enrich_melt, aes(x = value, fill = variable), alpha = 0.5) +
-  geom_vline(xintercept = c(1e-5, 1e-4), linetype = 2)
-
-## Based on the above histogram, it's likely worth filtering the plasmid seq at 3e-5 and cells at 1e-4
-```
-
-```{r Filtering the data and recalculating frequencies}
-
-klib_freq_filtered <- klib_freq %>% filter(f0b >= 1e-5) %>% mutate(n0 = n) %>% mutate(f0 = n/sum(n))
-kr1_freq_filtered <- kr1_freq %>% filter(f1b >= 1e-4) %>% mutate(n0 = n) %>% mutate(f1 = n/sum(n))
-kr2_freq_filtered <- kr2_freq %>% filter(f2b >= 1e-4) %>% mutate(n0 = n) %>% mutate(f2 = n/sum(n))
-kr3_freq_filtered <- kr3_freq %>% filter(f3b >= 1e-4) %>% mutate(n0 = n) %>% mutate(f3 = n/sum(n))
-
-k_filtered_enrich <- merge(klib_freq_filtered[,c("kozak_sequence","n0","f0")], kr1_freq_filtered[,c("kozak_sequence","n1","f1")], by = "kozak_sequence", all.y = T)
-k_filtered_enrich <- merge(k_filtered_enrich, kr2_freq_filtered[,c("kozak_sequence","n2","f2")], by = "kozak_sequence", all = T)
-k_filtered_enrich <- merge(k_filtered_enrich, kr3_freq_filtered[,c("kozak_sequence","n3","f3")], by = "kozak_sequence", all = T)
-
-```
-
-```{r Compare frequencies across datasets after filtering}
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_filtered_enrich, aes(x = f0, y = f1))
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_filtered_enrich, aes(x = f0, y = f2))
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_filtered_enrich, aes(x = f0, y = f3))
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_filtered_enrich, aes(x = f1, y = f2))
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_filtered_enrich, aes(x = f2, y = f3))
-  
-### Now take an average frequency for all the cell data to compare before and after recombination
-
-k_filtered_enrich[is.na(k_filtered_enrich)] <- 0
-k_filtered_enrich2 <- k_filtered_enrich %>% mutate(fcells = (f1 + f2 + f3)/3) %>% mutate(sdcells = sqrt(((f1-fcells)^2 + (f2-fcells)^2 + (f3-fcells)^2)/2)) %>% mutate(cvcells = sdcells / fcells)
-
-ggplot() + scale_x_log10() + scale_y_log10() + 
-  geom_point(data = k_filtered_enrich2, aes(x = f0, y = fcells))
-
-ggplot() + scale_x_log10() +  
-  geom_histogram(data = k_filtered_enrich2, aes(x = cvcells))
-```
-
-```{r Separting based on STIM1 variant}
 #separate based on variants
-k_filtered_enrich3 = k_filtered_enrich2 %>% mutate(code = substr(kozak_sequence, 1, 1))
-k_filtered_enrich3 = k_filtered_enrich3 %>% mutate(variant = case_when(code == "A" ~ "WT",
+k_enrich3 = k_enrich2 %>% mutate(code = substr(kozak_sequence, 1, 1))
+k_enrich3 = k_enrich3 %>% mutate(variant = case_when(code == "A" ~ "WT",
                                            code == "C" ~ "R429C",
                                            code == "G" ~ "R304W"))
 
-k_filtered_enrich3[k_filtered_enrich3$kozak_sequence == "_OTHER","variant"] <- "Other"
-k_filtered_enrich3[k_filtered_enrich3$kozak_sequence == "_TEMPL","variant"] <- "Template"
+k_enrich3[k_enrich3$kozak_sequence == "_OTHER","variant"] <- "Other"
+k_enrich3[k_enrich3$kozak_sequence == "_TEMPL","variant"] <- "Template"
 
 ```
 
 
-```{r Bringing in additional replicate data}
+```{r Bringing in STIM1 Kozak replicate data for the remaining two replicates}
 i0710 <- read.csv(file = "Data/STIM1_Kozak/I0710.csv", header = T)
 i0711 <- read.csv(file = "Data/STIM1_Kozak/I0711.csv", header = T)
 r5t0 <- merge(i0710, i0711, by = "Sequence", all = T)
 r5t0$kozak <- substr(r5t0$Sequence,1,6)
 r5t0$coding <- substr(r5t0$Sequence,7,20)
 r5t0 <- r5t0 %>% filter(coding == "ATGGATGTATGCG")
-ggplot() + geom_point(data = r5t0, aes(x = Count.x, y = Count.y)) +
-  scale_x_log10() + scale_y_log10() 
 
 i0712 <- read.csv(file = "Data/STIM1_Kozak/I0712.csv", header = T)
 i0713 <- read.csv(file = "Data/STIM1_Kozak/I0713.csv", header = T)
@@ -2494,8 +2445,6 @@ r5t1 <- merge(i0712, i0713, by = "Sequence", all = T)
 r5t1$kozak <- substr(r5t1$Sequence,1,6)
 r5t1$coding <- substr(r5t1$Sequence,7,20)
 r5t1 <- r5t1 %>% filter(coding == "ATGGATGTATGCG")
-ggplot() + geom_point(data = r5t1, aes(x = Count.x, y = Count.y)) +
-  scale_x_log10() + scale_y_log10() 
 
 i0714 <- read.csv(file = "Data/STIM1_Kozak/I0714.csv", header = T)
 i0715 <- read.csv(file = "Data/STIM1_Kozak/I0715.csv", header = T)
@@ -2503,8 +2452,6 @@ r5t2 <- merge(i0714, i0715, by = "Sequence", all = T)
 r5t2$kozak <- substr(r5t2$Sequence,1,6)
 r5t2$coding <- substr(r5t2$Sequence,7,20)
 r5t2 <- r5t2 %>% filter(coding == "ATGGATGTATGCG")
-ggplot() + geom_point(data = r5t2, aes(x = Count.x, y = Count.y)) +
-  scale_x_log10() + scale_y_log10()
 
 i0716 <- read.csv(file = "Data/STIM1_Kozak/I0716.csv", header = T)
 i0717 <- read.csv(file = "Data/STIM1_Kozak/I0717.csv", header = T)
@@ -2512,8 +2459,6 @@ r6t0 <- merge(i0716, i0717, by = "Sequence", all = T)
 r6t0$kozak <- substr(r6t0$Sequence,1,6)
 r6t0$coding <- substr(r6t0$Sequence,7,20)
 r6t0 <- r6t0 %>% filter(coding == "ATGGATGTATGCG")
-ggplot() + geom_point(data = r6t0, aes(x = Count.x, y = Count.y)) +
-  scale_x_log10() + scale_y_log10()
 
 i0718 <- read.csv(file = "Data/STIM1_Kozak/I0718.csv", header = T)
 i0719 <- read.csv(file = "Data/STIM1_Kozak/I0719.csv", header = T)
@@ -2521,8 +2466,6 @@ r6t1 <- merge(i0718, i0719, by = "Sequence", all = T)
 r6t1$kozak <- substr(r6t1$Sequence,1,6)
 r6t1$coding <- substr(r6t1$Sequence,7,20)
 r6t1 <- r6t1 %>% filter(coding == "ATGGATGTATGCG")
-ggplot() + geom_point(data = r6t1, aes(x = Count.x, y = Count.y)) +
-  scale_x_log10() + scale_y_log10()
 
 i0720 <- read.csv(file = "Data/STIM1_Kozak/I0720.csv", header = T)
 i0721 <- read.csv(file = "Data/STIM1_Kozak/I0721.csv", header = T)
@@ -2530,11 +2473,10 @@ r6t2 <- merge(i0720, i0721, by = "Sequence", all = T)
 r6t2$kozak <- substr(r6t2$Sequence,1,6)
 r6t2$coding <- substr(r6t2$Sequence,7,20)
 r6t2 <- r6t2 %>% filter(coding == "ATGGATGTATGCG")
-ggplot() + geom_point(data = r6t2, aes(x = Count.x, y = Count.y)) +
-  scale_x_log10() + scale_y_log10()
+
 ```
 
-```{r This replicate had different timepoints thus requiring a slightly different analysis}
+```{r Replicates 4 and 5 were performed slightly differently and sequenced on a NextSeq requiring a diff analysis}
 #r5t0[is.na(r5t0)] <- 0.1
 r5t0$freq1 <- r5t0$Count.x / sum(r5t0$Count.x, na.rm = T)
 r5t0$freq2 <- r5t0$Count.y / sum(r5t0$Count.y, na.rm = T)
@@ -2553,22 +2495,9 @@ r5t2$freq2 <- r5t2$Count.y / sum(r5t2$Count.y, na.rm = T)
 r5t2$r5t2 <- rowMeans(r5t2[c("freq1", "freq2")])
 
 r5 <- merge(r5, r5t2[,c("kozak","r5t2")])
-
-ggplot() + geom_point(data = r5, aes(x = r5t0, y = r5t1)) +
-  scale_x_log10() + scale_y_log10()
-
-ggplot() + geom_point(data = r5, aes(x = r5t1, y = r5t2)) +
-  scale_x_log10() + scale_y_log10()
-
-ggplot() + geom_point(data = r5, aes(x = r5t0, y = r5t2)) +
-  scale_x_log10() + scale_y_log10()
-
 r5$r5 <- (rowMeans(log10(r5[,c("r5t1","r5t2")]), na.rm = T) - log10(r5$r5t0))
 colnames(r5)[1] <- "kozak_sequence"
-```
 
-
-```{r Now for STIM1 replicate 6}
 #r6t0[is.na(r6t0)] <- 0.1
 r6t0$freq1 <- r6t0$Count.x / sum(r6t0$Count.x, na.rm = T)
 r6t0$freq2 <- r6t0$Count.y / sum(r6t0$Count.y, na.rm = T)
@@ -2587,32 +2516,22 @@ r6t2$freq2 <- r6t2$Count.y / sum(r6t2$Count.y, na.rm = T)
 r6t2$r6t2 <- rowMeans(r6t2[c("freq1", "freq2")])
 
 r6 <- merge(r6, r6t2[,c("kozak","r6t2")])
-
-ggplot() + geom_point(data = r6, aes(x = r6t0, y = r6t1)) +
-  scale_x_log10() + scale_y_log10()
-
-ggplot() + geom_point(data = r6, aes(x = r6t1, y = r6t2)) +
-  scale_x_log10() + scale_y_log10()
-
-ggplot() + geom_point(data = r6, aes(x = r6t0, y = r6t2)) +
-  scale_x_log10() + scale_y_log10()
-
 r6$r6 <- (rowMeans(log10(r6[,c("r6t1","r6t2")]), na.rm = T) - log10(r6$r6t0))
 colnames(r6)[1] <- "kozak_sequence"
 ```
 
 
-```{r Calculate enrichment}
-k_filtered_enrich3$enrichment <- log10(k_filtered_enrich3$fcells / k_filtered_enrich3$f0)
+```{r Calculate enrichment for STIM1 Kozak data} 
+k_enrich3$enrichment <- log10(k_enrich3$fcells / k_enrich3$f0)
 
-k_score0 = k_filtered_enrich3 %>% select("kozak_sequence","variant","f0", "fcells","enrichment") %>% filter(!(enrichment %in% c("0","Inf")))
+k_score0 = k_enrich3 %>% select("kozak_sequence","variant","f0", "fcells","enrichment") %>% filter(!(enrichment %in% c("0","Inf")))
 
 k_score <- merge(merge(k_score0, r5[,c("kozak_sequence","r5")], all = T), r6[,c("kozak_sequence","r6")], all = T)
 
 k_score$survival <- rowMeans(k_score[,c("enrichment","r5","r6")], na.rm = T)
 
 #abund_raw = read.csv("Kozak_values.csv")
-abund_raw = complete_frame5[,c("sequence","imputed_score","calibrated_score")]
+abund_raw = complete_frame5[,c("sequence","calibrated_score")]
 abund_raw = abund_raw %>% mutate(kozak_sequence = substr(sequence, 1, 6))
 abund_stim = abund_raw %>% mutate(code = substr(kozak_sequence, 1,1)) %>% filter(code != "T")
 k_score = left_join(k_score, abund_stim)
@@ -2625,11 +2544,11 @@ STIM1_Kozak_histogram <- ggplot() +
   labs(x = "Enrichment", y = "Number of variants") +
   theme(panel.grid.minor = element_blank(), panel.grid.major = element_blank(), strip.text.y.right = element_text(angle = 0)) + 
   scale_x_log10(limits = c(0.01,100), expand = c(0,0), breaks = c(0.01,1,100)) + 
-  scale_y_continuous(breaks = c(0,20,40)) + 
+  scale_y_continuous(breaks = c(0,30)) + 
   geom_vline(xintercept = 10^k_score$survival[2], linetype = 2) +
   geom_histogram(data = k_score_samples, aes(x= 10^survival), bins = 10, color = "black", fill = "grey75") + 
-  facet_grid(rows = vars(variant))
-STIM1_Kozak_histogram
+  facet_grid(rows = vars(variant), scales = "free_y") +
+  NULL; STIM1_Kozak_histogram
 ggsave(file = "Plots/STIM1_Kozak_histogram.pdf", STIM1_Kozak_histogram, height = 1.5, width = 1.9)
 ```
 
@@ -2640,9 +2559,7 @@ STIM1_geom_smooth_plot <- ggplot() + theme(panel.grid.minor = element_blank(), p
   scale_x_log10(expand = c(0,0), limits = c(0.007,1.34)) + scale_y_log10(expand = c(0,0)) + 
   labs(x = "Calibrated abundance score", y = "Enrichment score") +
   geom_hline(yintercept = 10^k_score$survival[2], alpha = 0.4) +
-  #geom_point(data = k_score_samples, aes(x= calibrated_score, y= 10^survival, color = variant), alpha = 0.4) +
-  geom_smooth(data = k_score_samples, aes(x= calibrated_score, y= 10^survival, color = variant), alpha = 0.1, span = 3) +
-  #facet_grid(cols = vars(variant)) +
+  geom_smooth(data = k_score_samples, aes(x= calibrated_score, y= 10^survival, color = variant), alpha = 0.1, span = 1.5) +
   NULL; STIM1_geom_smooth_plot
 ggsave(file = "Plots/STIM1_geom_smooth_plot.pdf", STIM1_geom_smooth_plot, height = 1.5, width = 2.9)
 
