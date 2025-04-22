@@ -463,7 +463,6 @@ flow_downsampled <- 5000
 
 cell_surface_staining_data <- rbind(stained[1:flow_downsampled,c("sample","BL1.A","RL1.A")], no_primary[1:flow_downsampled,c("sample","BL1.A","RL1.A")], no_secondary[1:flow_downsampled,c("sample","BL1.A","RL1.A")], no_recomb[1:flow_downsampled,c("sample","BL1.A","RL1.A")]) %>% filter(sample != "3_no_secondary")
 
-
 ace2_staining_scatterplot_cols <- c("1_stained" = "green2", "2_no_primary" = "purple", "4_no_recombined" = "brown")
 
 ACE2_staining_scatterplot <- ggplot() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
@@ -883,7 +882,6 @@ ggsave(file = "plots/PWM_pointplot.pdf", PWM_pointplot, height = 2, width = 3.4)
 
 ```
 
-
 ```{r All pairwise contributions of A at each position of the Kozak positions we tested}
 nt_list = c("A","C","G","T")
 
@@ -1225,6 +1223,7 @@ round(cor(log10(complete_frame4$rf_predict_mfi), complete_frame4$noderer, method
 
 paste("The total number of variants taht we scored was", nrow(complete_frame4))
 
+write.csv(file = "Output_datatables/Supp_table_1_Sortseq_scores.csv", complete_frame4, row.names = F)
 ```
 
 ## OK, this is where we are leaving all of the Kozak scoring. Now onto some applications.
@@ -1529,7 +1528,6 @@ Individual_SARS_CoV_2_Furin_mut_infection_plot <- ggplot() + theme_bw() +
   NULL
 Individual_SARS_CoV_2_Furin_mut_infection_plot
 
-
 Combined_individual <- (Individual_VSV_infection_plot | Individual_SARS_CoV_infection_plot) / (Individual_SARS_CoV_2_infection_plot | Individual_SARS_CoV_2_Furin_mut_infection_plot)
 
 Combined_individual
@@ -1722,16 +1720,16 @@ Scaled_individual_multiplex_vsv_plot <- ggplot() + theme(panel.grid = element_bl
   scale_x_log10(limits = c(0.01,2), expand = c(0,0)) + scale_y_log10(limits = c(0.003,5)) + ##scale_y_log10(limits = c(0.008,10)) + 
   labs(x = "Abundance", y = "Enrichment in infected cells", title = "VSV-G") +
   stat_smooth(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = mfi_individual, y = scaled_ind_vsv), geom='line', se=FALSE, alpha = 1, shape = 20, size = 2, color = "cyan", alpha = 0.2) +
-  #stat_smooth(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = calibrated_score, y = scaled_vsv), geom='line', se=FALSE, alpha = 1, shape = 20, size = 2, color = "red", line.alpha = 0.2) +
+  stat_smooth(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = calibrated_score, y = scaled_vsv), geom='line', se=FALSE, alpha = 1, shape = 20, size = 2, color = "red", line.alpha = 0.2) +
   geom_point(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = mfi_individual, y = scaled_ind_vsv), alpha = 1, shape = 20, size = 2, color = "blue") +
-  #geom_point(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = calibrated_score, y = scaled_vsv), alpha = 1, shape = 20, size = 2, color = "darkred") +
+  geom_point(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = calibrated_score, y = scaled_vsv), alpha = 1, shape = 20, size = 2, color = "darkred") +
   NULL; Scaled_individual_multiplex_vsv_plot
 ggsave(file = "plots/Scaled_individual_multiplex_vsv_plot.pdf", Scaled_individual_multiplex_vsv_plot, height = 1.5, width = 1.5)
 
 ```
 
 ```{r Output the infection data}
-write.csv(file = "Output_datatables/Kozak_infection.csv", complete_frame6[,c("sequence","calibrated_score","s2","s1","vsv","individual_s2","individual_s1","individual_vsv")], row.names = F, quote = F)
+write.csv(file = "Output_datatables/Supp_table_1_kozak_sortseq_and_infection.csv", complete_frame6[,c("sequence","sort_geomean","sort_upper_conf","sort_lower_conf","mfi_lm_norm","calibrated_score","mfi_individual","noderer","rf_predict_mfi","s1","s2","vsv","individual_s1","individual_s2","individual_vsv")], row.names = F, quote = F)
 
 ```
 
@@ -2350,6 +2348,12 @@ ggplot() + labs(title = "VSV-G") +
   geom_point(data = sequence_abundance_compiled_vsv_d355n , aes(x = calibrated_score, y = ave_enrichment), size = 1, alpha = 0.1, color = "cyan") +
   geom_line(data = sequence_abundance_compiled_vsv_d355n_loess, aes(x = calibrated_score, y = value), color = "cyan") +
   NULL
+```
+
+```{r Export mixed library Kozak infection data}
+
+write.csv(file = "Output_datatables/Supp_table_2_mixed_library_infection.csv", sequence_abundance_compiled, row.names = F, quote = F)
+
 ```
 
 
