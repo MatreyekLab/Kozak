@@ -123,7 +123,7 @@ theme_set(theme_bw())
 quantile_cutoff <- 0.99
 minquant_fraction <- 0.2
 
-## Seetings for knitting the document into a Markdown file
+## Setings for knitting the document into a Markdown file
 knitr::opts_chunk$set(
   warning = FALSE, # DO NOT show warnings
   message = FALSE, # DO NOT show messages
@@ -619,7 +619,6 @@ no_recomb <- read.csv(file = "Data/Flow_cytometry/F262/4_293T_stained.csv", head
 flow_downsampled <- 5000
 
 cell_surface_staining_data <- rbind(stained[1:flow_downsampled,c("sample","BL1.A","RL1.A")], no_primary[1:flow_downsampled,c("sample","BL1.A","RL1.A")], no_secondary[1:flow_downsampled,c("sample","BL1.A","RL1.A")], no_recomb[1:flow_downsampled,c("sample","BL1.A","RL1.A")]) %>% filter(sample != "3_no_secondary")
-
 
 ace2_staining_scatterplot_cols <- c("1_stained" = "green2", "2_no_primary" = "purple", "4_no_recombined" = "brown")
 
@@ -1133,6 +1132,70 @@ round(cor(log10(complete_frame4$calibrated_score), complete_frame4$noderer, meth
 
     ## [1] "Correlation coefficients between Noderer data and our sequencing data --> Pearson's r^2: 0.67 Spearman's rho^2: 0.6"
 
+## Seeing if we can model what is going on
+
+``` r
+## Trying a position weight matrix for the calibrated score
+
+pwm_dataframe <- data.frame("n6" = rep(0,4),"n5" = rep(0,4),"n4" = rep(0,4),"n3" = rep(0,4),"n2" = rep(0,4),"n1" = rep(0,4))
+rownames(pwm_dataframe) <- c("A","C","G","T")
+
+for(x in 1:nrow(complete_frame4)){
+  temp_seq <- substr(complete_frame4$sequence[x],1,6)
+  temp_score <- as.numeric(complete_frame4$calibrated_score[x])
+  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,1,1),"n6"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,1,1),"n6"] + temp_score
+  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,2,2),"n5"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,2,2),"n5"] + temp_score
+  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,3,3),"n4"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,3,3),"n4"] + temp_score
+  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,4,4),"n3"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,4,4),"n3"] + temp_score
+  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,5,5),"n2"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,5,5),"n2"] + temp_score
+  pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,6,6),"n1"] <- pwm_dataframe[rownames(pwm_dataframe) == substr(temp_seq,6,6),"n1"] + temp_score
+}
+pwm_dataframe2 <- pwm_dataframe / colSums(pwm_dataframe)
+pwm_matrix <- as.matrix(pwm_dataframe2)
+
+## Function for working out the position weight matrix value
+pwm <- function(freq, total, bg=0.25){
+  #using the formulae above
+  p <- (freq + (sqrt(total) * 1/4)) / (total + (4 * (sqrt(total) * 1/4)))
+  log2(p/bg)
+}
+pwm_matrix2 <- pwm(pwm_matrix,6)
+
+## Logo plot 
+proportion <- function(x){
+   rs <- sum(x);
+   return(x / rs);
+}
+
+## Bar chart
+pwm_matrix_melt <- melt(pwm_matrix)
+
+PWM_barplot <- ggplot() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + 
+  labs(x = "Position along Kozak", y = "Weighted\nfrequency") + 
+  geom_bar(data = pwm_matrix_melt, aes(x = Var2, y = value, fill = Var1), stat = "identity", color = "black")
+PWM_barplot
+```
+
+![](Kozak_files/figure-gfm/PSSM%20for%20calibrated_score-1.png)<!-- -->
+
+``` r
+ggsave(file = "plots/PWM_barplot.pdf", PWM_barplot, height = 1.2, width = 3)
+
+PWM_pointplot <- ggplot() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top") + 
+  labs(x = "Position along Kozak", y = "Weighted\nfrequency") + 
+  geom_hline(yintercept = 0.25, linetype = 2, alpha = 0.4) + 
+  geom_point(data = pwm_matrix_melt, aes(x = Var2, y = value, color = Var1, fill = Var1), stat = "identity", shape = 21, size = 2, alpha = 0.5) +
+  NULL; PWM_pointplot
+```
+
+![](Kozak_files/figure-gfm/PSSM%20for%20calibrated_score-2.png)<!-- -->
+
+``` r
+ggsave(file = "plots/PWM_pointplot.pdf", PWM_pointplot, height = 2, width = 3.4)
+```
+
 ``` r
 nt_list = c("A","C","G","T")
 
@@ -1567,6 +1630,10 @@ paste("The total number of variants taht we scored was", nrow(complete_frame4))
 ```
 
     ## [1] "The total number of variants taht we scored was 4042"
+
+``` r
+write.csv(file = "Output_datatables/Supp_table_1_Sortseq_scores.csv", complete_frame4, row.names = F)
+```
 
 ## OK, this is where we are leaving all of the Kozak scoring. Now onto some applications.
 
@@ -2220,9 +2287,9 @@ Scaled_individual_multiplex_vsv_plot <- ggplot() + theme(panel.grid = element_bl
   scale_x_log10(limits = c(0.01,2), expand = c(0,0)) + scale_y_log10(limits = c(0.003,5)) + ##scale_y_log10(limits = c(0.008,10)) + 
   labs(x = "Abundance", y = "Enrichment in infected cells", title = "VSV-G") +
   stat_smooth(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = mfi_individual, y = scaled_ind_vsv), geom='line', se=FALSE, alpha = 1, shape = 20, size = 2, color = "cyan", alpha = 0.2) +
-  #stat_smooth(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = calibrated_score, y = scaled_vsv), geom='line', se=FALSE, alpha = 1, shape = 20, size = 2, color = "red", line.alpha = 0.2) +
+  stat_smooth(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = calibrated_score, y = scaled_vsv), geom='line', se=FALSE, alpha = 1, shape = 20, size = 2, color = "red", line.alpha = 0.2) +
   geom_point(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = mfi_individual, y = scaled_ind_vsv), alpha = 1, shape = 20, size = 2, color = "blue") +
-  #geom_point(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = calibrated_score, y = scaled_vsv), alpha = 1, shape = 20, size = 2, color = "darkred") +
+  geom_point(data = complete_frame6 %>% filter(!is.na(scaled_ind_vsv) & !is.na(scaled_vsv)), aes(x = calibrated_score, y = scaled_vsv), alpha = 1, shape = 20, size = 2, color = "darkred") +
   NULL; Scaled_individual_multiplex_vsv_plot
 ```
 
@@ -2233,7 +2300,7 @@ ggsave(file = "plots/Scaled_individual_multiplex_vsv_plot.pdf", Scaled_individua
 ```
 
 ``` r
-write.csv(file = "Output_datatables/Kozak_infection.csv", complete_frame6[,c("sequence","calibrated_score","s2","s1","vsv","individual_s2","individual_s1","individual_vsv")], row.names = F, quote = F)
+write.csv(file = "Output_datatables/Supp_table_1_kozak_sortseq_and_infection.csv", complete_frame6[,c("sequence","sort_geomean","sort_upper_conf","sort_lower_conf","mfi_lm_norm","calibrated_score","mfi_individual","noderer","rf_predict_mfi","s1","s2","vsv","individual_s1","individual_s2","individual_vsv")], row.names = F, quote = F)
 ```
 
 ## Calculate derivatives of the slope
@@ -2913,12 +2980,11 @@ Sequence_and_abundance_scatterplots <- ggplot() + theme(panel.grid = element_bla
 ``` r
 ggsave(file = "Plots/Sequence_and_abundance_scatterplots.pdf", Sequence_and_abundance_scatterplots, height = 2.3, width = 4.5)
 
-
 Sequence_and_abundance_lineplots <- ggplot() + theme(panel.grid = element_blank(), legend.position = "bottom") + 
   scale_x_log10() + scale_y_log10(limits = c(0.1,3)) + labs(x = "calibrated abundance", y = "Enrichment upon infection") +
   #geom_hline(data = template_seqabund_dataframe, (aes(yintercept = template)), color = "purple", alpha = 0.5, size = 1) +
   geom_point(data = sequence_abundance_compiled, aes(x = calibrated_score, y = ave_enrichment), alpha = 0, size = 1) +
-  stat_smooth(data= sequence_abundance_compiled, aes(x = calibrated_score, y = ave_enrichment, color = variant), geom='line', alpha=0.6, se=FALSE, size = 2) +
+  stat_smooth(data= sequence_abundance_compiled, aes(x = calibrated_score, y = ave_enrichment, color = variant), geom='line', alpha=0.6, se=FALSE, size = 0.75) +
   facet_grid(cols = vars(virus)) +
   NULL; Sequence_and_abundance_lineplots
 ```
@@ -3013,6 +3079,10 @@ ggplot() + labs(title = "VSV-G") +
 
 ![](Kozak_files/figure-gfm/Performing%20LOESS%20off%20minilibrary%20data%20for%20VSV-G-1.png)<!-- -->
 
+``` r
+write.csv(file = "Output_datatables/Supp_table_2_mixed_library_infection.csv", sequence_abundance_compiled, row.names = F, quote = F)
+```
+
 ## Now bringing in the STIM1 experiment
 
 ``` r
@@ -3077,7 +3147,9 @@ k_enrich <- merge(k_enrich, kr3_freq[,c("kozak_sequence","n3","f3")], by = "koza
 
 
 k_enrich[is.na(k_enrich)] <- 0
-k_enrich2 <- k_enrich %>% mutate(fcells = (f1 + f2 + f3)/3) %>% mutate(sdcells = sqrt(((f1-fcells)^2 + (f2-fcells)^2 + (f3-fcells)^2)/2)) %>% mutate(cvcells = sdcells / fcells)
+#k_enrich2 <- k_enrich %>% mutate(fcells = (f1 + f2 + f3)/3) %>% mutate(sdcells = sqrt(((f1-fcells)^2 + (f2-fcells)^2 + (f3-fcells)^2)/2)) %>% mutate(cvcells = sdcells / fcells)
+k_enrich2 <- k_enrich %>% mutate(fcells = (f2 + f3)/3) %>% mutate(sdcells = sqrt(((f2-fcells)^2 + (f3-fcells)^2)/2)) %>% mutate(cvcells = sdcells / fcells)
+
 
 #separate based on variants
 k_enrich3 = k_enrich2 %>% mutate(code = substr(kozak_sequence, 1, 1))
@@ -3200,10 +3272,10 @@ STIM1_Kozak_histogram <- ggplot() +
   labs(x = "Enrichment", y = "Number of variants") +
   theme(panel.grid.minor = element_blank(), panel.grid.major = element_blank(), strip.text.y.right = element_text(angle = 0)) + 
   scale_x_log10(limits = c(0.01,100), expand = c(0,0), breaks = c(0.01,1,100)) + 
-  scale_y_continuous(breaks = c(0,20,40)) + 
+  scale_y_continuous(breaks = c(0,30)) + 
   geom_vline(xintercept = 10^k_score$survival[2], linetype = 2) +
   geom_histogram(data = k_score_samples, aes(x= 10^survival), bins = 10, color = "black", fill = "grey75") + 
-  facet_grid(rows = vars(variant)) +
+  facet_grid(rows = vars(variant), scales = "free_y") +
   NULL; STIM1_Kozak_histogram
 ```
 
@@ -3227,5 +3299,5 @@ STIM1_geom_smooth_plot <- ggplot() + theme(panel.grid.minor = element_blank(), p
 ![](Kozak_files/figure-gfm/Plotting%20the%20variant-specific%20STIM1%20functional%20outputs%20dependent%20on%20expression%20level-1.png)<!-- -->
 
 ``` r
-ggsave(file = "Plots/STIM1_geom_smooth_plot.pdf", STIM1_geom_smooth_plot, height = 1.5, width = 2.9)
+#ggsave(file = "Plots/STIM1_geom_smooth_plot.pdf", STIM1_geom_smooth_plot, height = 1.5, width = 2.9)
 ```

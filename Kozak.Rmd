@@ -27,13 +27,14 @@ theme_set(theme_bw())
 quantile_cutoff <- 0.99
 minquant_fraction <- 0.2
 
-## Seetings for knitting the document into a Markdown file
+## Setings for knitting the document into a Markdown file
 knitr::opts_chunk$set(
   warning = FALSE, # DO NOT show warnings
   message = FALSE, # DO NOT show messages
   error = FALSE, # interrupt generation in case of errors,
   echo = TRUE  # show R code
 )
+
 ```
 
 ```{r Create the reference dataframe}
@@ -2421,7 +2422,9 @@ k_enrich <- merge(k_enrich, kr3_freq[,c("kozak_sequence","n3","f3")], by = "koza
 
 
 k_enrich[is.na(k_enrich)] <- 0
-k_enrich2 <- k_enrich %>% mutate(fcells = (f1 + f2 + f3)/3) %>% mutate(sdcells = sqrt(((f1-fcells)^2 + (f2-fcells)^2 + (f3-fcells)^2)/2)) %>% mutate(cvcells = sdcells / fcells)
+#k_enrich2 <- k_enrich %>% mutate(fcells = (f1 + f2 + f3)/3) %>% mutate(sdcells = sqrt(((f1-fcells)^2 + (f2-fcells)^2 + (f3-fcells)^2)/2)) %>% mutate(cvcells = sdcells / fcells)
+k_enrich2 <- k_enrich %>% mutate(fcells = (f2 + f3)/3) %>% mutate(sdcells = sqrt(((f2-fcells)^2 + (f3-fcells)^2)/2)) %>% mutate(cvcells = sdcells / fcells)
+
 
 #separate based on variants
 k_enrich3 = k_enrich2 %>% mutate(code = substr(kozak_sequence, 1, 1))
@@ -2565,6 +2568,7 @@ STIM1_geom_smooth_plot <- ggplot() + theme(panel.grid.minor = element_blank(), p
   geom_hline(yintercept = 10^k_score$survival[2], alpha = 0.4) +
   geom_smooth(data = k_score_samples, aes(x= calibrated_score, y= 10^survival, color = variant), alpha = 0.1, span = 1.5) +
   NULL; STIM1_geom_smooth_plot
-ggsave(file = "Plots/STIM1_geom_smooth_plot.pdf", STIM1_geom_smooth_plot, height = 1.5, width = 2.9)
+#ggsave(file = "Plots/STIM1_geom_smooth_plot.pdf", STIM1_geom_smooth_plot, height = 1.5, width = 2.9)
 
 ```
+
