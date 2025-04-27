@@ -627,7 +627,7 @@ melt_sort <- melt(sort_combined2[,c("sequence","sort1","sort2","sort3","sort4")]
 melt_sort[!is.na(melt_sort$value),"n"] = 1
 melt_sort <- melt_sort %>% filter(!is.na(value))
 
-sort_summary <- melt_sort %>% group_by(sequence) %>% summarize(sort_mean = mean(value, na.rm = T), sort_geomean_log10 = mean(log10(value), na.rm = T), sd_log10 = sd(log10(value), na.rm = T), sort_n = sum(n, na.rm = T), .groups = "drop") %>% arrange(desc(sort_geomean_log10)) %>% mutate(sort_geomean = 10^sort_geomean_log10, sort_upper_conf = 10^(sort_geomean_log10 + sd_log10/sqrt(sort_n-1)*1.96), sort_lower_conf = 10^(sort_geomean_log10 - sd_log10/sqrt(sort_n-1)*1.96))
+sort_summary <- melt_sort %>% group_by(sequence) %>% summarize(sort_mean = mean(value, na.rm = T), sort_geomean_log10 = mean(log10(value), na.rm = T), sd_log10 = sd(log10(value), na.rm = T), sort_n = sum(n, na.rm = T), .groups = "drop") %>% arrange(desc(sort_geomean_log10)) %>% mutate(sort_geomean = 10^sort_geomean_log10, sort_upper_conf = 10^(sort_geomean_log10 + sd_log10/sqrt(sort_n)*1.645), sort_lower_conf = 10^(sort_geomean_log10 - sd_log10/sqrt(sort_n)*1.645))
 
 sort_summary2 <- merge(sort_summary, sort_combined2[,c("sequence","total_count")], by= "sequence") %>% arrange(desc(total_count)) %>% filter(sort_n >= 2)
 
@@ -1321,38 +1321,39 @@ paste("Spearman's rho^2 value between our calibrated scores and the Ambrosini sc
 
 
 ```{r Figure out biggest effect size differences possible through snv for each possible Kozak}
-running_snv_df <- read.csv(file = "Output_datatables/Human_kozak_permutations.csv", header = T, stringsAsFactors = F)
+#running_snv_df <- read.csv(file = "Output_datatables/Human_kozak_permutations.csv", header = T, stringsAsFactors = F)
 
 ## ORIGINAL SCRIPT FOR MAKING THE ABOVE FILE
 ## I'm commenting it out b/c it's computation-greedy, and I don't need to regenerate it each time if I have the above file exported
 
-# snv_analysis_key <- complete_frame4[,c("sequence","calibrated_score")]
-# snv_analysis <- complete_frame4[,c("sequence","calibrated_score")]
-# 
-# running_snv_df <- data.frame("orig_sequence" = NA,"sequence" = NA, "hgvs_conseq" = NA, "calibrated_score" = NA, "fold_diff" = NA)
-# for(row in 1:nrow(snv_analysis)){
-#   temp_wt_seq <- snv_analysis$sequence[row]
-#   temp_wt_score <- snv_analysis$calibrated_score[row]
-#   hgvs_conseq <- c()
-#   sequence <- c()
-#   for(pos in 1:6){
-#     for(nt in c("A","C","G","T")){
-#       hgvs_conseq <- c(hgvs_conseq, paste0("c.",pos-7,substr(temp_wt_seq,pos,pos),">",nt))
-#       sequence <- c(sequence,paste0(substr(snv_analysis$sequence[row],0,pos-1),nt,substr(snv_analysis$sequence[row],pos+1,9)))
-#     }
-#   }
-#   temp_combined <- data.frame(cbind(hgvs_conseq,sequence))
-#   temp_subset <- merge(temp_combined, snv_analysis_key, by = "sequence") %>% filter(sequence != temp_wt_seq)
-#   temp_subset$fold_diff <- temp_subset$calibrated_score / temp_wt_score
-#   temp_subset$orig_sequence <- temp_wt_seq
-#   ## Collect all data in a dataframe
-#   running_snv_df <- rbind(running_snv_df, temp_subset)
-# }
-# 
-# running_snv_df <- running_snv_df %>% filter(!is.na(orig_sequence))
-# colnames(running_snv_df) <- c("kozak","mut_kozak","hgvs_conseq","calibrated_score","fold_diff")
-# 
-# write.csv(file = "Output_datatables/Human_kozak_permutations.csv", running_snv_df, row.names = F)
+snv_analysis <- complete_frame4[,c("sequence","calibrated_score","sort_upper_conf","sort_lower_conf")]
+
+running_snv_df <- data.frame("orig_sequence" = NA,"sequence" = NA, "hgvs_conseq" = NA, "calibrated_score" = NA, "sort_upper_conf" = NA,"sort_lower_conf" = NA,"fold_diff" = NA, "conf_nonoverlap" = NA)
+for(row in 1:nrow(snv_analysis)){
+  temp_wt_seq <- snv_analysis$sequence[row]
+  temp_wt_score <- snv_analysis$calibrated_score[row]
+  temp_wt_lower <- snv_analysis$sort_lower_conf[row]
+  hgvs_conseq <- c()
+  sequence <- c()
+  for(pos in 1:6){
+    for(nt in c("A","C","G","T")){
+      hgvs_conseq <- c(hgvs_conseq, paste0("c.",pos-7,substr(temp_wt_seq,pos,pos),">",nt))
+      sequence <- c(sequence,paste0(substr(snv_analysis$sequence[row],0,pos-1),nt,substr(snv_analysis$sequence[row],pos+1,9)))
+    }
+  }
+  temp_combined <- data.frame(cbind(hgvs_conseq,sequence))
+  temp_subset <- merge(temp_combined, snv_analysis, by = "sequence") %>% filter(sequence != temp_wt_seq)
+  temp_subset$fold_diff <- temp_subset$calibrated_score / temp_wt_score
+  temp_subset$conf_nonoverlap <- temp_subset$sort_upper_conf < temp_wt_lower
+  temp_subset$orig_sequence <- temp_wt_seq
+  ## Collect all data in a dataframe
+  running_snv_df <- rbind(running_snv_df, temp_subset)
+}
+
+running_snv_df <- running_snv_df %>% filter(!is.na(orig_sequence))
+colnames(running_snv_df) <- c("kozak","mut_kozak","hgvs_conseq","calibrated_score","sort_upper_conf","sort_lower_conf","fold_diff","conf_nonoverlap")
+
+write.csv(file = "Output_datatables/Human_kozak_permutations.csv", running_snv_df, row.names = F)
 
 ```
 
@@ -1376,7 +1377,13 @@ clinvar_confidently_low_mutkozak_list <- unique(clinvar_confidently_low$mut_koza
 paste("The number of Kozak -6 to -1 nt variants found in ClinVar that are confidently measured as potentially low is:",nrow(clinvar_confidently_low))
 
 clinvar2 <- merge(clinvar, running_snv_df, by = c("hgvs_conseq","kozak","mut_kozak"), all.x = T)
-clinvar4 <- merge(clinvar2, unique(clinvar_confidently_low[,c("mut_kozak", "conf_low")]), all.x = T)
+#clinvar4 <- merge(clinvar2, unique(clinvar_confidently_low[,c("mut_kozak", "conf_low")]), all.x = T)
+clinvar4 <- clinvar2; clinvar4$conf_low <- NA
+for(x in 1:nrow(clinvar4)){
+  if(!is.na(clinvar4$conf_nonoverlap[x])){
+    if(clinvar4$conf_nonoverlap[x] == TRUE & clinvar4$fold_diff[x] <= 0.25){clinvar4$conf_low[x] <- "Yes"}
+  }
+}
 
 acmg73 <- read.csv(file = "Data/ClinVar/ACMG73.csv", header = T, stringsAsFactors = F)
 
@@ -1402,6 +1409,7 @@ ggsave(file = "Plots/Clinvar_Kozak_permutation_fold_densityplot.pdf", Clinvar_Ko
 
 Clinvar_Kozak_permutation_fold_densityplot <- ggplot() + theme(panel.grid = element_blank()) + 
   scale_x_log10(breaks = c(0.01,0.1,1,10,100), expand = c(0,0)) + 
+  scale_y_log10() + 
   labs(x = "Fold change from reference Kozak", y = "Count") + 
   #geom_hline(yintercept = 0) +
   #geom_density(data = running_snv_df, aes(x = fold_diff, y = ..density..), fill = "black", alpha = 0.3, adjust = 0.5) +
@@ -1410,10 +1418,12 @@ Clinvar_Kozak_permutation_fold_densityplot <- ggplot() + theme(panel.grid = elem
   #geom_histogram(data = transcripts_acmg, aes(x = fold_diff, y = ..density..), fill = "red", alpha = 0.5, color = "red") +
   NULL; Clinvar_Kozak_permutation_fold_densityplot
 ggsave(file = "Plots/Clinvar_Kozak_permutation_fold_densityplot.pdf", Clinvar_Kozak_permutation_fold_densityplot, height = 1.4, width = 3)
+
+write.table(file = "Output_datatables/Supp_table_5_ClinVar.tsv", clinvar4[,5:ncol(clinvar4)], row.names = F, quote = F, sep = "\t")
 ```
 
 ```{r clinvar variants subsetted to acmg59}
-clinvar2_acmg_most_common <- data.frame(table(clinvar2_acmg$gene)) %>% arrange(desc(Freq))
+clinvar2_acmg_most_common <- data.frame(table(clinvar2_acmg$gene)) %>% arrange(desc(Var1))
 clinvar2_acmg_most_common_3plus <- clinvar2_acmg_most_common %>% filter(Freq >= 3)
 clinvar2_acmg_most_common_3plus_levels <- clinvar2_acmg_most_common_3plus$Var1
 
@@ -1427,7 +1437,7 @@ clinvar2_acmg_3plus_conf_low <- clinvar2_acmg_3plus %>% filter(fold_diff < 0.2 &
 Most_clinvar_grouped_scatterplot <- ggplot() + 
   theme(panel.grid.minor = element_blank(), panel.grid.major.x = element_blank()) + 
   labs(x = "Fold abundance of reference Kozak", y = NULL) +
-  scale_x_log10(limits = c(0.02,18)) + scale_y_discrete(expand = c(0,1)) +
+  scale_x_log10(limits = c(0.02,18)) + scale_y_discrete(expand = c(0,1), limits=rev) +
   geom_vline(xintercept = 1, linetype = 2, alpha = 0.4) +
   geom_point(data = clinvar2_acmg_3plus, aes(x = fold_diff, y = gene), alpha = 0.25) +
   geom_label_repel(data = clinvar2_acmg_3plus_conf_low, 
