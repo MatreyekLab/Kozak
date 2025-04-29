@@ -1222,9 +1222,8 @@ paste("Correlation coefficients between log10 of RF-refined scores and the Noder
 round(cor(log10(complete_frame4$rf_predict_mfi), complete_frame4$noderer, method = "pearson", use = "complete")^2,2),"Spearman's rho^2:",
 round(cor(log10(complete_frame4$rf_predict_mfi), complete_frame4$noderer, method = "spearman", use = "complete")^2,2))
 
-paste("The total number of variants taht we scored was", nrow(complete_frame4))
+paste("The total number of variants that we scored was", nrow(complete_frame4))
 
-write.csv(file = "Output_datatables/Supp_table_1_Sortseq_scores.csv", complete_frame4, row.names = F)
 ```
 
 ## OK, this is where we are leaving all of the Kozak scoring. Now onto some applications.
@@ -1419,7 +1418,7 @@ Clinvar_Kozak_permutation_fold_densityplot <- ggplot() + theme(panel.grid = elem
   NULL; Clinvar_Kozak_permutation_fold_densityplot
 ggsave(file = "Plots/Clinvar_Kozak_permutation_fold_densityplot.pdf", Clinvar_Kozak_permutation_fold_densityplot, height = 1.4, width = 3)
 
-write.table(file = "Output_datatables/Supp_table_5_ClinVar.tsv", clinvar4[,5:ncol(clinvar4)], row.names = F, quote = F, sep = "\t")
+write.table(file = "Output_datatables/Supp_table_2_ClinVar.tsv", clinvar4[,5:ncol(clinvar4)], row.names = F, quote = F, sep = "\t")
 ```
 
 ```{r clinvar variants subsetted to acmg59}
@@ -1740,7 +1739,7 @@ ggsave(file = "plots/Scaled_individual_multiplex_vsv_plot.pdf", Scaled_individua
 ```
 
 ```{r Output the infection data}
-write.csv(file = "Output_datatables/Supp_table_1_kozak_sortseq_and_infection.csv", complete_frame6[,c("sequence","sort_geomean","sort_upper_conf","sort_lower_conf","mfi_lm_norm","calibrated_score","mfi_individual","noderer","rf_predict_mfi","s1","s2","vsv","individual_s1","individual_s2","individual_vsv")], row.names = F, quote = F)
+write.csv(file = "Output_datatables/Supp_table_4_kozak_sortseq_and_infection.csv", complete_frame6[,c("sequence","sort_geomean","sort_upper_conf","sort_lower_conf","mfi_lm_norm","calibrated_score","mfi_individual","noderer","rf_predict_mfi","s1","s2","vsv","individual_s1","individual_s2","individual_vsv")], row.names = F, quote = F)
 
 ```
 
@@ -2363,7 +2362,7 @@ ggplot() + labs(title = "VSV-G") +
 
 ```{r Export mixed library Kozak infection data}
 
-write.csv(file = "Output_datatables/Supp_table_2_mixed_library_infection.csv", sequence_abundance_compiled, row.names = F, quote = F)
+write.csv(file = "Output_datatables/Supp_table_5_mixed_library_infection.csv", sequence_abundance_compiled, row.names = F, quote = F)
 
 ```
 
