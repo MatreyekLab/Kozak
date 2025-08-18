@@ -8,7 +8,8 @@ output: github_document
 ```{r Load packages}
 ## Clear existing variables, load required packages, set the seed and base theme.
 rm(list = ls())
-library(reshape2)
+#library(reshape2)
+library(reshape)
 library(ggrepel)
 library(ggbeeswarm)
 library(patchwork)
@@ -1488,6 +1489,16 @@ clinvar2_acmg[clinvar2_acmg$gene == "PMS2" & clinvar2_acmg$hgvs_conseq == "c.-2C
 clinvar2_acmg[clinvar2_acmg$gene == "PALB2" & clinvar2_acmg$hgvs_conseq == "c.-2C>G" & clinvar2_acmg$kozak == "TGCCCGATG","comment"] <- "VUS that is likely pathogenic"
 
 ```
+
+## Now seeing how the G>C changes in the beta-thallesemia and GATA4 Kozaks alter protein steady-state expression
+```{r GATA4 and }
+
+beta_thalassemia <- subset(complete_frame4, sequence %in% c("GACACCATG","CACACCATG"))
+
+gata4 <- subset(complete_frame4, sequence %in% c("GGGACCATG","CGGACCATG"))
+
+```
+
 
 
 ## Bringing in the infection data
