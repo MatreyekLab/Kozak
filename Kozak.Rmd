@@ -494,6 +494,7 @@ sort4 <- fourWaySortAnalysis(c(89,89,90,90,91,91,92,92)) %>% arrange(desc(w_ave)
 
 ```{r Finding bin-wise distributions of high and low control variants, warning=FALSE}
 ## Look at distributions of control sequences
+library(reshape2)
 sort_controls <- melt(rbind(
   data.frame(t(t((sort1 %>% filter(sequence == "TTATGGATG"))[,c("bin1_freq","bin2_freq","bin3_freq","bin4_freq")])/sum(t((sort1 %>% filter(sequence == "TTATGGATG"))[,c("bin1_freq","bin2_freq","bin3_freq","bin4_freq")])))) %>% mutate(replicate = "rep1", sequence = "TTATGGATG"),
   data.frame(t(t((sort2 %>% filter(sequence == "TTATGGATG"))[,c("bin1_freq","bin2_freq","bin3_freq","bin4_freq")])/sum(t((sort2 %>% filter(sequence == "TTATGGATG"))[,c("bin1_freq","bin2_freq","bin3_freq","bin4_freq")])))) %>% mutate(replicate = "rep2", sequence = "TTATGGATG"),
@@ -1040,13 +1041,18 @@ pairwise_summary_fold_diff <- rbind(pos_1_difference_summary %>% mutate(position
 pairwise_fold_diff$position <- factor(pairwise_fold_diff$position, levels = c("-6","-5","-4","-3","-2","-1"))
 pairwise_summary_fold_diff$position <- factor(pairwise_summary_fold_diff$position, levels = c("-6","-5","-4","-3","-2","-1"))
 
+pairwise_fold_diff_colors <- c("A/C" = "green", "A/G" = "dodgerblue1", "A/T" = "darkorchid1")
+
 Pairwise_fold_diff <- ggplot() + 
+  scale_fill_manual(values = pairwise_fold_diff_colors) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top") + 
   scale_y_log10(limits = c(1e-2,1e3), breaks = c(0.01,0.1,1,10,100,1000)) + 
   labs(x = "Position along Kozak", y = "Fold difference") + 
-  geom_hline(yintercept = 1, pairwise_summary_fold_diff = 2, alpha = 0.2) + 
-  geom_jitter(data = pairwise_fold_diff, aes(x = position, y = values, color = subset, fill = subset), position  = position_jitterdodge(jitter.width = 0.1, dodge.width = 0.5), stat = "identity", shape = 21, size = 0.5, alpha = 0.01) + 
-  geom_point(data = pairwise_summary_fold_diff, aes(x = position, y = geomean, color = subset, fill = subset), position  = position_dodge(width = 0.5), stat = "identity", shape = 21, size = 1, alpha = 1, color = "black") +
+  geom_hline(yintercept = 1, alpha = 0.2) + 
+  geom_jitter(data = pairwise_fold_diff, aes(x = position, y = values, fill = subset, color = NA), 
+              position  = position_jitterdodge(jitter.width = 0.1, dodge.width = 0.5), stat = "identity", shape = 21, size = 0.5, alpha = 0.05) + 
+  geom_point(data = pairwise_summary_fold_diff, aes(x = position, y = geomean, color = subset, fill = subset), 
+             position  = position_dodge(width = 0.5), stat = "identity", shape = 45, size = 3, alpha = 1, color = "black") +
   NULL
 Pairwise_fold_diff
 ggsave(file = "plots/Pairwise_fold_diff.pdf", Pairwise_fold_diff, height = 2.2, width = 3.4)
@@ -1687,8 +1693,31 @@ calibrated_score_vs_SARS2_scatterplot <- ggplot() + scale_x_log10(limits = c(0.0
   NULL; calibrated_score_vs_SARS2_scatterplot
 ggsave(file = "plots/calibrated_score_vs_SARS2_scatterplot.png", calibrated_score_vs_SARS2_scatterplot, height = 4, width = 6)
 
+rf_predict_mfi_vs_SARS2_scatterplot <- ggplot() + scale_x_log10(limits = c(0.01,1.4), expand = c(0,0)) + scale_y_log10(limits = c(0.003,10), expand = c(0,0)) + 
+  labs(x = "rf_predict_mfi score", y = "SARS2 infection") +
+  geom_point(data= complete_frame5, aes(x = rf_predict_mfi, y = s2), alpha = 0.4) +
+  NULL; rf_predict_mfi_vs_SARS2_scatterplot
+ggsave(file = "plots/rf_predict_mfi_vs_SARS2_scatterplot.png", rf_predict_mfi_vs_SARS2_scatterplot, height = 4, width = 6)
 
 ```
+
+```{r VSV and S2 overlaid plots for presentations}
+
+rf_predict_mfi_s2_vsv_1 <- ggplot() + 
+  scale_x_log10(limits = c(0.02,1.15), expand = c(0,0)) + scale_y_log10(limits = c(0.005,5), expand = c(0,0)) + 
+  labs(x = "ACE2 abundance", y = "Relative infection score") +
+  geom_point(data= complete_frame5 %>% filter(!is.na(s2) & s2 > 0.008), aes(x = rf_predict_mfi, y = s2), alpha = 0.1) +
+  geom_smooth(data= complete_frame5 %>% filter(!is.na(s2) & s2 > 0.008), aes(x = rf_predict_mfi, y = s2), alpha = 0, size = 2) +
+  NULL; rf_predict_mfi_s2_vsv_1
+ggsave(file = "plots/rf_predict_mfi_s2_vsv_1.png", rf_predict_mfi_s2_vsv_1, height = 3, width = 4)
+
+rf_predict_mfi_s2_vsv_2 <- rf_predict_mfi_s2_vsv_1 + 
+  geom_point(data= complete_frame5 %>% filter(!is.na(vsv) & vsv > 0.008), aes(x = rf_predict_mfi, y = vsv), alpha = 0.1, color = "red") + 
+  geom_smooth(data= complete_frame5 %>% filter(!is.na(vsv) & vsv > 0.008), aes(x = rf_predict_mfi, y = vsv), alpha = 0, size = 2, color = "red") +
+  NULL; rf_predict_mfi_s2_vsv_2
+ggsave(file = "plots/rf_predict_mfi_s2_vsv_2.png", rf_predict_mfi_s2_vsv_2, height = 3, width = 4)
+```
+
 
 
 ```{r Comparisons with individual infections}
@@ -2581,14 +2610,17 @@ ggsave(file = "Plots/STIM1_Kozak_histogram.pdf", STIM1_Kozak_histogram, height =
 
 ```{r Plotting the variant-specific STIM1 functional outputs dependent on expression level}
 k_score_samples$variant <- factor(k_score_samples$variant, levels = c("R304W","R429C","WT"))
+stim1_colors <- c("WT" = "red", "R429C" = "blue", "R304W" = "green3")
 
-STIM1_geom_smooth_plot <- ggplot() + theme(panel.grid.minor = element_blank(), panel.grid.major = element_blank()) + 
+STIM1_geom_smooth_plot <- ggplot() + 
+  theme(panel.grid.minor = element_blank(), panel.grid.major = element_blank()) + 
   scale_x_log10(expand = c(0,0), limits = c(0.007,1.34)) + scale_y_log10(expand = c(0,0)) + 
+  scale_color_manual(values = stim1_colors) + 
   labs(x = "Calibrated abundance score", y = "Enrichment score") +
   geom_hline(yintercept = 10^k_score$survival[2], alpha = 0.4) +
   geom_smooth(data = k_score_samples, aes(x= calibrated_score, y= 10^survival, color = variant), alpha = 0.1, span = 1.5) +
   NULL; STIM1_geom_smooth_plot
-#ggsave(file = "Plots/STIM1_geom_smooth_plot.pdf", STIM1_geom_smooth_plot, height = 1.5, width = 2.9)
+ggsave(file = "Plots/STIM1_geom_smooth_plot.pdf", STIM1_geom_smooth_plot, height = 1.5, width = 2.9)
 
 ```
 

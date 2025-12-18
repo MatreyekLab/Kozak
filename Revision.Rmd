@@ -1,0 +1,157 @@
+---
+title: "Revision"
+author: "Kenneth Matreyek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(googlesheets4)
+```
+
+```{r}
+flow <- read_sheet("https://docs.google.com/spreadsheets/d/10o9GBZMrAY-8j4WqbjWkHmWqnZCbE9cxM2aT3qMFA_k/edit?gid=1166355403#gid=1166355403", sheet = "Nidhi_flow")# %>% filter(!(Cells == "LLPc12" &  Replicate == "R1"))
+
+calibrated_scores <- read.csv(file = "Output_datatables/Supp_table_4_kozak_sortseq_and_infection.csv", header = T, stringsAsFactors = F)
+
+key <- read.csv(file = "Keys/Individual_key.csv", header = T, stringsAsFactors = F)
+
+flow_key <- merge(flow, key, by = "recombined_construct", all.x = T)
+
+flow_key_scores <- merge(flow_key, calibrated_scores, by = "sequence", all.x = T) %>% filter(!is.na(sequence))
+
+flow_key_scores$subset <- NA
+flow_key_scores[flow_key_scores$Cells %in% c("LPc4","LLPc2","LLPc12","SLPc3"),"subset"] <- "293T_lines"
+flow_key_scores[flow_key_scores$Cells %in% c("SLP_10pct","SLP_0.5pct","SLP_0.2pct"),"subset"] <- "Serum_conditions"
+flow_key_scores[flow_key_scores$Cells %in% c("LPc4_HighG","LPc4_LowG"),"subset"] <- "Glucose_conditions"
+flow_key_scores[flow_key_scores$Cells %in% c("A549","NIH3T3"),"subset"] <- "Other_cell_lines"
+
+flow_key_scores$identical <- "no"
+flow_key_scores[flow_key_scores$Cells %in% c("SLP_10pct","SLPc3"),"identical"] <- "yes1"
+flow_key_scores[flow_key_scores$Cells %in% c("LPc4_HighG","LPc4"),"identical"] <- "yes2"
+
+ggplot() + theme_bw() + theme(panel.grid.minor = element_blank()) + 
+  geom_point(data = flow_key_scores, aes(x = calibrated_score, y = Fold_consensus, color = Cells, shape = identical)) +
+  facet_grid(rows = vars(subset)) + 
+  theme(legend.position = "top") +
+  scale_x_log10() + scale_y_log10()
+
+flow_key_scores_summary <- flow_key_scores %>% filter(Cells != "NIH3T3") %>% group_by(recombined_construct, Cells, subset, calibrated_score, identical, rf_predict_mfi, noderer) %>% summarize(median_value = median(Fold_consensus))
+
+## Comparing the four different landing pad cell lines
+
+cell_lines <- flow_key_scores %>% filter(subset %in% c("293T_lines", "Other_cell_lines") & Cells != "NIH3T3") %>% mutate(n = 1)
+cell_lines_summary <- cell_lines %>% group_by(recombined_construct, Cells, subset, calibrated_score, identical, rf_predict_mfi, noderer) %>% summarize(median_value = median(Fold_consensus), n = sum(n))
+
+cell_lines$Cells <- factor(cell_lines$Cells, levels = c("SLPc3","LPc4","LLPc2","LLPc12","A549"))
+cell_lines_summary$Cells <- factor(cell_lines_summary$Cells, levels = c("SLPc3","LPc4","LLPc2","LLPc12","A549"))
+
+Plot_cell_lines <- ggplot() + theme_bw() + 
+  theme(panel.grid = element_blank(), axis.text.x.bottom = element_text(angle = -45, hjust = 0, vjust = 0.5)) + 
+  geom_abline(slope = 1, size = 3, alpha = 0.2, color = "red") + 
+  geom_point(data = cell_lines, aes(x = calibrated_score, y = Fold_consensus), alpha = 0.3) +
+  geom_line(data = cell_lines_summary, aes(x = calibrated_score, y = median_value)) +
+  geom_point(data = cell_lines_summary, aes(x = calibrated_score, y = median_value)) +
+  facet_grid(cols = vars(Cells)) + 
+  theme(legend.position = "top") +
+  scale_x_log10(limits = c(0.01, 1.1), expand = c(0,0.1)) + 
+  scale_y_log10(limits = c(0.01, 1.1),  expand = c(0,0.1)) +
+  labs(x = "Calibrated score", y = "Fraction of\nconsensus\nsequence MFI") +
+  NULL; Plot_cell_lines
+ggsave(file = "Plots/Plot_cell_lines.pdf", Plot_cell_lines, height = 1.5, width = 5)
+
+
+SLPc3 <- cell_lines_summary %>% filter(Cells == "SLPc3")
+cor(SLPc3$calibrated_score, SLPc3$median_value, method = "pearson")^2
+
+LPc4 <- cell_lines_summary %>% filter(Cells == "LPc4")
+cor(LPc4$calibrated_score, LPc4$median_value, method = "pearson")^2
+
+LLPc2 <- cell_lines_summary %>% filter(Cells == "LLPc2")
+cor(LLPc2$calibrated_score, LLPc2$median_value, method = "pearson")^2
+
+LLPc12 <- cell_lines_summary %>% filter(Cells == "LLPc12")
+cor(LLPc12$calibrated_score, LLPc12$median_value, method = "pearson")^2
+
+A549c5 <- cell_lines_summary %>% filter(Cells == "A549")
+cor(A549c5$calibrated_score, A549c5$median_value, method = "pearson")^2
+
+
+conditions <- flow_key_scores %>% filter(subset %in% c("Serum_conditions", "Glucose_conditions")) %>% mutate(n = 1)
+conditions_summary <- conditions %>% group_by(recombined_construct, Cells, subset, calibrated_score, identical, rf_predict_mfi, noderer) %>% summarize(median_value = median(Fold_consensus), n = sum(n))
+
+
+conditions$subset <- factor(conditions$subset, levels = c("Serum_conditions", "Glucose_conditions"))
+conditions_summary$subset <- factor(conditions_summary$subset, levels = c("Serum_conditions", "Glucose_conditions"))
+conditions$Cells <- factor(conditions$Cells, levels = c("SLP_0.2pct","SLP_0.5pct","SLP_10pct","LPc4_LowG","LPc4_HighG"))
+conditions_summary$Cells <- factor(conditions_summary$Cells, levels = c("SLP_0.2pct","SLP_0.5pct","SLP_10pct","LPc4_LowG","LPc4_HighG"))
+
+Plot_conditions <- ggplot() + theme_bw() + 
+  theme(panel.grid = element_blank(), axis.text.x.bottom = element_text(angle = -45, hjust = 0, vjust = 0.5)) + 
+  geom_abline(slope = 1, size = 3, alpha = 0.2, color = "red") + 
+  geom_point(data = conditions, aes(x = calibrated_score, y = Fold_consensus, color = Cells), alpha = 0.5) +
+  geom_line(data = conditions_summary, aes(x = calibrated_score, y = median_value, color = Cells)) +
+  geom_point(data = conditions_summary, aes(x = calibrated_score, y = median_value, color = Cells)) +
+  facet_grid(cols = vars(subset)) + 
+  theme(legend.position = "right") +
+  scale_x_log10(limits = c(0.01, 1.1), expand = c(0,0.1)) + 
+  scale_y_log10(limits = c(0.01, 1.1),  expand = c(0,0.1)) +
+  labs(x = "Calibrated score", y = "Fraction of\nconsensus\nsequence MFI") +
+  scale_color_manual(values = c("SLP_0.2pct" = "cyan","SLP_0.5pct" = "blue","SLP_10pct" = "black","LPc4_LowG" = "blue","LPc4_HighG" = "black")) + 
+  NULL; Plot_conditions
+ggsave(file = "Plots/Plot_conditions.pdf", Plot_conditions, height = 1.5, width = 3.9)
+
+serum_10pct <- conditions_summary %>% filter(Cells == "SLP_10pct")
+cor(serum_10pct$calibrated_score, serum_10pct$median_value, method = "pearson")^2
+
+serum_0pt5pct <- conditions_summary %>% filter(Cells == "SLP_0.5pct")
+cor(serum_0pt5pct$calibrated_score, serum_0pt5pct$median_value, method = "pearson")^2
+
+serum_0pt2pct <- conditions_summary %>% filter(Cells == "SLP_0.2pct")
+cor(serum_0pt2pct$calibrated_score, serum_0pt2pct$median_value, method = "pearson")^2
+
+glucose_high <- conditions_summary %>% filter(Cells == "LPc4_HighG")
+cor(glucose_high$calibrated_score, glucose_high$median_value, method = "pearson")^2
+
+glucose_low <- conditions_summary %>% filter(Cells == "LPc4_LowG")
+cor(glucose_low$calibrated_score, glucose_low$median_value, method = "pearson")^2
+
+
+ggplot() + theme_bw() + 
+  geom_line(data = flow_key_scores_summary, aes(x = calibrated_score, y = median_value, color = Cells, linetype = identical)) +
+  geom_point(data = flow_key_scores_summary, aes(x = calibrated_score, y = median_value, color = Cells, shape = identical)) +
+  facet_grid(rows = vars(subset)) + 
+  theme(legend.position = "top") +
+  scale_x_log10() + scale_y_log10()
+
+ggplot() + theme_bw() + 
+  geom_line(data = flow_key_scores_summary, aes(x = noderer, y = median_value, color = Cells, linetype = identical)) +
+  geom_point(data = flow_key_scores_summary, aes(x = noderer, y = median_value, color = Cells, shape = identical)) +
+  facet_grid(rows = vars(subset)) + 
+  theme(legend.position = "top") +
+  scale_x_log10() + scale_y_log10()
+
+flow_key_scores_summary_slp <- flow_key_scores_summary %>% filter(identical %in% c("yes1","yes2"))
+
+ggplot() + theme_bw() + 
+  geom_line(data = flow_key_scores_summary_slp, aes(x = calibrated_score, y = median_value, color = Cells)) +
+  geom_point(data = flow_key_scores_summary_slp, aes(x = calibrated_score, y = median_value, color = Cells)) +
+  theme(legend.position = "top") +
+  facet_grid(rows = vars(identical)) + 
+  scale_x_log10() + scale_y_log10()
+
+ggplot() + theme_bw() + 
+  geom_line(data = flow_key_scores_summary_slp, aes(x = noderer, y = median_value, color = Cells)) +
+  geom_point(data = flow_key_scores_summary_slp, aes(x = noderer, y = median_value, color = Cells)) +
+  theme(legend.position = "top") +
+  scale_x_log10() + scale_y_log10()
+
+ggplot() + theme_bw() + 
+  geom_line(data = flow_key_scores_summary_slp, aes(x = rf_predict_mfi, y = median_value, color = Cells)) +
+  geom_point(data = flow_key_scores_summary_slp, aes(x = rf_predict_mfi, y = median_value, color = Cells)) +
+  theme(legend.position = "top") +
+  scale_x_log10() + scale_y_log10()
+
+```
+
