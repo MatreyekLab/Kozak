@@ -11,7 +11,9 @@ library(googlesheets4)
 ```
 
 ```{r}
-flow <- read_sheet("https://docs.google.com/spreadsheets/d/10o9GBZMrAY-8j4WqbjWkHmWqnZCbE9cxM2aT3qMFA_k/edit?gid=1166355403#gid=1166355403", sheet = "Nidhi_flow")# %>% filter(!(Cells == "LLPc12" &  Replicate == "R1"))
+#flow <- read_sheet("https://docs.google.com/spreadsheets/d/10o9GBZMrAY-8j4WqbjWkHmWqnZCbE9cxM2aT3qMFA_k/edit?gid=1166355403#gid=1166355403", sheet = "Nidhi_flow")# %>% filter(!(Cells == "LLPc12" &  Replicate == "R1"))
+
+flow <- read.csv(file = "Data/Revision_flow/Nidhi_flow.csv", header = T) %>% filter(!(Cells == "LLPc12" &  Replicate == "R1"))
 
 calibrated_scores <- read.csv(file = "Output_datatables/Supp_table_4_kozak_sortseq_and_infection.csv", header = T, stringsAsFactors = F)
 
